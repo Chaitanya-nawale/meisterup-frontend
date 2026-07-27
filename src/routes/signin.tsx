@@ -6,6 +6,9 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 
 export const Route = createFileRoute("/signin")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    mode: (search.mode as string) || "signin",
+  }),
   head: () => ({
     meta: [
       { title: "Sign In — MeisterUp" },
@@ -177,15 +180,20 @@ function Divider() {
 function SignInPage() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const search = Route.useSearch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(search.mode === "signup");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [authError, setAuthError] = useState<string | null>(null);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
+
+  useEffect(() => {
+    setIsSignUp(search.mode === "signup");
+  }, [search.mode]);
 
   // If user is already logged in, redirect to dashboard
   useEffect(() => {

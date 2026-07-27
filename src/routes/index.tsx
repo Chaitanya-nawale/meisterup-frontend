@@ -1,34 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../lib/auth";
 import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
-  Brain,
   Check,
-  ChevronDown,
-  Command,
-  Cpu,
+  ChevronRight,
   Flame,
   GitBranch,
-  Github,
-  Layers,
-  LineChart,
-  Lock,
-  Network,
   Play,
-  Sparkles,
-  Target,
-  Terminal,
-  TrendingUp,
   RotateCcw,
-  Twitter,
+  Sparkles,
+  TrendingUp,
   X,
   Zap,
 } from "lucide-react";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/")(  {
   head: () => ({
     meta: [
       { title: "MeisterUp — Adaptive Learning Platform for Engineers" },
@@ -120,8 +109,8 @@ function Nav() {
         </a>
         <nav className="hidden items-center gap-8 md:flex">
           {[
-            ["Platform", "#platform"],
-            ["Curriculum", "#curriculum"],
+            ["How it works", "#how"],
+            ["Try it", "#demo"],
             ["Skills", "#skills"],
             ["Pricing", "/pricing"],
             ["FAQ", "/faq"],
@@ -146,19 +135,19 @@ function Nav() {
             </Link>
           ) : (
             <>
-              <Link
-                to="/signin"
-                className="hidden text-[13px] font-medium text-white/70 hover:text-white sm:block"
-              >
-                Sign in
-              </Link>
               <a
                 href="#demo"
-                className="group inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-black transition-all hover:bg-white/90"
+                className="hidden text-[13px] font-medium text-white/70 hover:text-white sm:block"
               >
                 Start free
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </a>
+              <Link
+                to="/signin"
+                className="group inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-black transition-all hover:bg-white/90"
+              >
+                Sign in
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </>
           )}
         </div>
@@ -188,7 +177,7 @@ function Hero() {
         >
           <Eyebrow>
             <Sparkles className="h-3 w-3" />
-            <span>Adaptive engine · v1.4</span>
+            <span>Level Up Your Skills</span>
           </Eyebrow>
 
           <h1 className="mt-6 font-sans text-5xl font-semibold leading-[1.02] tracking-[-0.035em] text-white sm:text-6xl md:text-7xl">
@@ -222,139 +211,37 @@ function Hero() {
           </div>
 
           <p className="mt-6 text-[12px] text-white/40">
-            Free tier · No card required · SOC 2 in progress
+            Free tier · Instant skill gap analysis · Personalized learning path
           </p>
         </motion.div>
 
-        <HeroCanvas />
+        <HeroVisual />
       </div>
     </section>
   );
 }
 
-/* Hero canvas — an animated knowledge graph + adaptive path */
+/* Hero visual — simplified: just the animated knowledge graph */
 
-function HeroCanvas() {
+function HeroVisual() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      className="relative mx-auto mt-16 max-w-6xl"
+      className="relative mx-auto mt-16 max-w-3xl"
     >
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] shadow-[0_60px_120px_-30px_rgba(0,0,0,0.9)]">
-        {/* window chrome */}
-        <div className="flex items-center gap-2 border-b border-white/[0.06] bg-black/40 px-4 py-2.5">
-          <div className="flex gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-          </div>
-          <div className="mx-auto flex items-center gap-1.5 rounded-md border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 text-[11px] text-white/50">
-            <Lock className="h-3 w-3" /> meisterup.com / learn / python
-          </div>
-          <div className="w-12" />
+        <div className="relative h-[380px] overflow-hidden">
+          <KnowledgeGraph />
         </div>
 
-        <div className="grid grid-cols-12 gap-0">
-          {/* Left rail — learner state */}
-          <div className="col-span-3 border-r border-white/[0.06] p-5">
-            <div className="text-[10px] font-medium uppercase tracking-widest text-white/40">
-              Learner model
-            </div>
-            <div className="mt-3 space-y-3">
-              {[
-                { k: "Transferred from Java", v: 78, color: "bg-emerald-400" },
-                { k: "Python idioms", v: 24, color: "bg-amber-400" },
-                { k: "Async runtime", v: 41, color: "bg-cyan-400" },
-                { k: "Type system", v: 62, color: "bg-indigo-400" },
-              ].map((s, i) => (
-                <div key={s.k}>
-                  <div className="flex items-baseline justify-between text-[11px]">
-                    <span className="text-white/70">{s.k}</span>
-                    <span className="font-mono tabular-nums text-white/50">{s.v}%</span>
-                  </div>
-                  <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/5">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${s.v}%` }}
-                      transition={{ delay: 0.6 + i * 0.1, duration: 0.8 }}
-                      className={cn("h-full rounded-full", s.color)}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-              <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-white/40">
-                <Brain className="h-3 w-3" /> Next best concept
-              </div>
-              <div className="mt-1.5 text-[13px] font-semibold text-white">List comprehensions</div>
-              <div className="mt-0.5 text-[11px] text-white/50">+12 mastery · 4 min est.</div>
-            </div>
-          </div>
-
-          {/* Center — knowledge graph */}
-          <div className="relative col-span-6 h-[420px] overflow-hidden">
-            <KnowledgeGraph />
-          </div>
-
-          {/* Right rail — active activity */}
-          <div className="col-span-3 border-l border-white/[0.06] p-5">
-            <div className="text-[10px] font-medium uppercase tracking-widest text-white/40">
-              Session · Q 3 / 5
-            </div>
-            <div className="mt-3 text-[13px] font-medium text-white">
-              Which output does this expression produce?
-            </div>
-            <pre className="mt-3 overflow-hidden rounded-md border border-white/[0.06] bg-black/40 p-3 font-mono text-[11px] leading-relaxed text-white/80">
-              <span className="text-fuchsia-300">[x*x</span>{" "}
-              <span className="text-cyan-300">for</span> x <span className="text-cyan-300">in</span>{" "}
-              <span className="text-emerald-300">range</span>(5){" "}
-              <span className="text-cyan-300">if</span> x % 2
-              <span className="text-fuchsia-300">]</span>
-            </pre>
-            <div className="mt-3 space-y-1.5">
-              {["[0,1,4,9,16]", "[1,9]", "[1,9,25]", "[0,4,16]"].map((o, i) => (
-                <motion.div
-                  key={o}
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 + i * 0.08 }}
-                  className={cn(
-                    "flex items-center justify-between rounded-md border px-2.5 py-1.5 font-mono text-[11px]",
-                    i === 1
-                      ? "border-emerald-400/40 bg-emerald-400/[0.06] text-emerald-200"
-                      : "border-white/[0.06] bg-white/[0.02] text-white/60",
-                  )}
-                >
-                  <span>{o}</span>
-                  {i === 1 && <Check className="h-3 w-3" />}
-                </motion.div>
-              ))}
-            </div>
-            <div className="mt-4 rounded-md border border-white/[0.06] bg-white/[0.02] p-2.5 text-[11px] text-white/50">
-              <span className="text-white/70">Reasoning:</span> range(5) filtered by odd → 1, 3 →
-              squared.
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom bar — telemetry */}
-        <div className="flex items-center justify-between border-t border-white/[0.06] bg-black/30 px-4 py-2 text-[11px] text-white/50">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5">
-              <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px] shadow-emerald-400" />
-              Adapting in real-time
-            </span>
-            <span className="font-mono">latency · 41ms</span>
-          </div>
-          <div className="flex items-center gap-4 font-mono">
-            <span>concepts: 214</span>
-            <span>mastered: 47</span>
-            <span>next-review: 3</span>
-          </div>
+        {/* Subtle bottom label */}
+        <div className="flex items-center justify-center border-t border-white/[0.06] bg-black/30 px-4 py-2.5 text-[11px] text-white/50">
+          <span className="flex items-center gap-1.5">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px] shadow-emerald-400" />
+            Your personal knowledge graph — adapting in real-time
+          </span>
         </div>
       </div>
     </motion.div>
@@ -467,14 +354,8 @@ function KnowledgeGraph() {
 }
 
 /* ────────────────────────────────────────────────────────────── */
-/*  PLATFORM PILLARS                                              */
+/*  HOW IT WORKS                                                  */
 /* ────────────────────────────────────────────────────────────── */
-
-function Pillars() {
-  return <PillarsInner />;
-}
-
-/* Plain-language 3-step explainer, right under the hero */
 
 function HowItWorks() {
   const steps = [
@@ -525,275 +406,6 @@ function HowItWorks() {
         <p className="mt-10 text-center text-[13px] text-white/40">
           Most people finish their first lesson in under five minutes.
         </p>
-      </div>
-    </section>
-  );
-}
-
-function PillarsInner() {
-  const items = [
-    {
-      icon: Brain,
-      title: "Models what you already know",
-      body: "The engine estimates prior knowledge from adjacent skills. Coming from Java? You skip variables and loops on day one.",
-    },
-    {
-      icon: Network,
-      title: "Knowledge graph, not chapters",
-      body: "Every concept is a node with prerequisites, sibling ideas, and common misconceptions. Learn by dependency, not table of contents.",
-    },
-    {
-      icon: Target,
-      title: "The optimal next lesson",
-      body: "A Bayesian mastery model chooses the highest-value concept for you right now — factoring difficulty, retention, and confidence.",
-    },
-    {
-      icon: LineChart,
-      title: "Continuously calibrated",
-      body: "Every answer updates the model. Weak areas surface. Mastered concepts fade into scheduled review. Nothing is wasted.",
-    },
-  ];
-  return (
-    <section id="platform" className="relative border-b border-white/[0.06] py-28">
-      <GlowOrb className="left-1/3 top-1/2 h-[420px] w-[420px] bg-indigo-500/20" />
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <Eyebrow>The engine</Eyebrow>
-          <h2 className="mt-5 font-sans text-4xl font-semibold tracking-[-0.03em] text-white sm:text-5xl">
-            Not a course.
-            <span className="text-white/40"> An engine.</span>
-          </h2>
-          <p className="mt-4 text-[16px] text-white/60">
-            Four systems working in concert — so the platform can teach a Rust veteran and a Python
-            beginner from the same skill tree.
-          </p>
-        </div>
-
-        <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((it, i) => (
-            <motion.div
-              key={it.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ delay: i * 0.08, duration: 0.5 }}
-              className="group relative bg-black p-7"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04]">
-                <it.icon className="h-4.5 w-4.5 text-white/80" />
-              </div>
-              <div className="mt-5 text-[15px] font-semibold text-white">{it.title}</div>
-              <p className="mt-2 text-[13px] leading-relaxed text-white/55">{it.body}</p>
-              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────── */
-/*  ADAPTIVE ASSESSMENT DEMO                                      */
-/* ────────────────────────────────────────────────────────────── */
-
-function AssessmentDemo() {
-  const steps = [
-    {
-      q: "How would you describe your comfort with Python?",
-      a: "I've written Java for 6 years, no Python.",
-      inference: "Estimated ability: intermediate general programming, no Python-specific.",
-    },
-    {
-      q: "Given `x = [1,2,3]; y = x; y.append(4)` — what is `x`?",
-      a: "[1,2,3,4] — references share memory.",
-      inference: "Mastered: aliasing, mutability. Skipping 4 lessons.",
-    },
-    {
-      q: "What does `@staticmethod` change about a method?",
-      a: "Not sure.",
-      inference: "Gap detected: decorators & class semantics. Prioritized.",
-    },
-    {
-      q: "Explain what `async def` returns when called.",
-      a: "A coroutine that must be awaited.",
-      inference: "Mastered: async fundamentals. Advancing to concurrency patterns.",
-    },
-  ];
-  const [step, setStep] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setStep((s) => (s + 1) % steps.length), 3800);
-    return () => clearInterval(id);
-  }, [steps.length]);
-  const mastery = [22, 41, 43, 68][step];
-
-  return (
-    <section id="curriculum" className="relative border-b border-white/[0.06] py-28">
-      <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2 lg:items-center">
-        <div>
-          <Eyebrow>Adaptive assessment</Eyebrow>
-          <h2 className="mt-5 font-sans text-4xl font-semibold tracking-[-0.03em] text-white sm:text-5xl">
-            Six questions.
-            <br />
-            <span className="text-white/40">A curriculum for one.</span>
-          </h2>
-          <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-white/60">
-            Instead of a 40-question exam, MeisterUp asks a handful of well-chosen questions. Each
-            answer updates a probability distribution over every concept in the graph — collapsing
-            weeks of onboarding into under a minute.
-          </p>
-          <ul className="mt-8 space-y-3">
-            {[
-              "Rapid convergence — 4-8 questions locate you in the graph",
-              "Confidence-weighted — 'not sure' is a valid, useful signal",
-              "Transferable knowledge is credited automatically",
-              "Re-run any time your skills change",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2.5 text-[14px] text-white/75">
-                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-400" />
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="relative">
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-6">
-            <div className="flex items-center justify-between text-[11px] text-white/40">
-              <span className="font-mono">Question {step + 1} of 6</span>
-              <span className="flex items-center gap-1.5">
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                Live inference
-              </span>
-            </div>
-
-            <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/5">
-              <motion.div
-                className="h-full bg-gradient-to-r from-indigo-400 to-fuchsia-400"
-                animate={{ width: `${((step + 1) / 6) * 100}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={step}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.35 }}
-                className="mt-6 space-y-4"
-              >
-                <div className="text-[15px] font-medium leading-relaxed text-white">
-                  {steps[step].q}
-                </div>
-                <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 text-[13px] text-white/70">
-                  <span className="text-white/40">You:</span> {steps[step].a}
-                </div>
-                <div className="flex items-start gap-2 rounded-lg border border-indigo-400/20 bg-indigo-400/[0.05] p-3">
-                  <Brain className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-indigo-300" />
-                  <div className="text-[12px] leading-relaxed text-indigo-100/80">
-                    {steps[step].inference}
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/[0.06] pt-5 text-[11px]">
-              <Stat label="Est. mastery" value={`${mastery}%`} />
-              <Stat label="Concepts placed" value={`${8 + step * 6}`} />
-              <Stat label="Time to lesson 1" value={`${28 - step * 4}s`} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <div className="text-[10px] uppercase tracking-widest text-white/40">{label}</div>
-      <div className="mt-1 font-mono text-[16px] font-semibold tabular-nums text-white">
-        {value}
-      </div>
-    </div>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────── */
-/*  ACTIVITY TYPES                                                */
-/* ────────────────────────────────────────────────────────────── */
-
-function ActivityTypes() {
-  const types = [
-    {
-      icon: Command,
-      name: "Multiple choice",
-      desc: "Rapid concept checks with distractors mined from real misconceptions.",
-    },
-    {
-      icon: Terminal,
-      name: "Interactive simulation",
-      desc: "Run code in a sandbox. Trace state. Watch the runtime think.",
-    },
-    {
-      icon: GitBranch,
-      name: "Error detection",
-      desc: "Swipe-review production code. Spot bugs, security issues, and hallucinations.",
-    },
-    {
-      icon: Layers,
-      name: "Ordering & sequencing",
-      desc: "Drag steps into the correct order — request lifecycle, deployment flow.",
-    },
-    {
-      icon: Cpu,
-      name: "Scenario decisions",
-      desc: "Design under constraint. Justify tradeoffs. Get graded on reasoning.",
-    },
-    {
-      icon: Sparkles,
-      name: "Explain-back",
-      desc: "Teach the concept in your own words. Reviewed for accuracy and depth.",
-    },
-  ];
-  return (
-    <section className="relative border-b border-white/[0.06] py-28">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <Eyebrow>Learning activities</Eyebrow>
-          <h2 className="mt-5 font-sans text-4xl font-semibold tracking-[-0.03em] text-white sm:text-5xl">
-            Ten ways to prove you know it.
-          </h2>
-          <p className="mt-4 text-[16px] text-white/60">
-            Different concepts require different interactions. MeisterUp picks the right one — and
-            grades reasoning, not just answers.
-          </p>
-        </div>
-
-        <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {types.map((t, i) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: i * 0.04 }}
-              className="group relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent p-6 transition hover:border-white/20"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04]">
-                  <t.icon className="h-4 w-4 text-white/80" />
-                </div>
-                <div className="text-[14px] font-semibold text-white">{t.name}</div>
-              </div>
-              <p className="mt-3 text-[13px] leading-relaxed text-white/55">{t.desc}</p>
-              <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/[0.03] opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -1132,60 +744,44 @@ function StatCard({
 }
 
 /* ────────────────────────────────────────────────────────────── */
-/*  SKILL LIBRARY                                                 */
+/*  SKILL STRIP                                                   */
 /* ────────────────────────────────────────────────────────────── */
 
 const SKILL_TAGS = [
   { name: "Python", learners: "48k", tone: "from-yellow-300/20 to-yellow-500/5" },
-  { name: "Rust", learners: "12k", tone: "from-orange-400/20 to-orange-600/5" },
-  { name: "Go", learners: "19k", tone: "from-cyan-300/20 to-cyan-500/5" },
   { name: "TypeScript", learners: "61k", tone: "from-blue-400/20 to-blue-600/5" },
+  { name: "Rust", learners: "12k", tone: "from-orange-400/20 to-orange-600/5" },
   { name: "React", learners: "54k", tone: "from-sky-400/20 to-sky-600/5" },
-  { name: "SQL", learners: "37k", tone: "from-indigo-400/20 to-indigo-600/5" },
   { name: "System Design", learners: "29k", tone: "from-fuchsia-400/20 to-fuchsia-600/5" },
-  { name: "Kubernetes", learners: "16k", tone: "from-blue-300/20 to-blue-500/5" },
-  { name: "Docker", learners: "22k", tone: "from-sky-300/20 to-sky-500/5" },
-  { name: "AWS", learners: "31k", tone: "from-amber-400/20 to-amber-600/5" },
+  { name: "SQL", learners: "37k", tone: "from-indigo-400/20 to-indigo-600/5" },
+  { name: "Go", learners: "19k", tone: "from-cyan-300/20 to-cyan-500/5" },
   { name: "Machine Learning", learners: "27k", tone: "from-emerald-400/20 to-emerald-600/5" },
-  { name: "Prompt Engineering", learners: "44k", tone: "from-violet-400/20 to-violet-600/5" },
-  { name: "Cybersecurity", learners: "18k", tone: "from-rose-400/20 to-rose-600/5" },
-  { name: "Linux", learners: "24k", tone: "from-zinc-300/20 to-zinc-500/5" },
-  { name: "Git", learners: "39k", tone: "from-red-400/20 to-red-600/5" },
-  { name: "Networking", learners: "14k", tone: "from-teal-400/20 to-teal-600/5" },
-  { name: "DevOps", learners: "21k", tone: "from-lime-400/20 to-lime-600/5" },
-  { name: "AI Engineering", learners: "33k", tone: "from-purple-400/20 to-purple-600/5" },
-  { name: "Data Structures", learners: "42k", tone: "from-pink-400/20 to-pink-600/5" },
-  { name: "Statistics", learners: "11k", tone: "from-green-400/20 to-green-600/5" },
 ];
 
-function SkillLibrary() {
+function SkillStrip() {
   return (
-    <section id="skills" className="relative border-b border-white/[0.06] py-28">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <Eyebrow>Skill library</Eyebrow>
-            <h2 className="mt-5 max-w-2xl font-sans text-4xl font-semibold tracking-[-0.03em] text-white sm:text-5xl">
-              Any technical skill.
-              <span className="text-white/40"> One engine.</span>
-            </h2>
-          </div>
-          <p className="max-w-md text-[15px] text-white/60">
-            The knowledge graph works for languages, frameworks, systems, and concepts. New skill
-            trees ship weekly.
+    <section id="skills" className="relative border-b border-white/[0.06] py-20">
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="flex flex-col items-center text-center">
+          <Eyebrow>Skill library</Eyebrow>
+          <h2 className="mt-5 font-sans text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+            Built for any technical skill.
+          </h2>
+          <p className="mt-3 text-[15px] text-white/50">
+            New skills added every week — and growing.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
           {SKILL_TAGS.map((s, i) => (
             <motion.a
               key={s.name}
               href="#demo"
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ delay: (i % 12) * 0.02 }}
-              className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-4 transition hover:border-white/20 hover:bg-white/[0.04]"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.04 }}
+              className="group relative overflow-hidden rounded-full border border-white/10 bg-white/[0.02] px-5 py-2.5 transition hover:border-white/20 hover:bg-white/[0.04]"
             >
               <div
                 className={cn(
@@ -1193,224 +789,20 @@ function SkillLibrary() {
                   s.tone,
                 )}
               />
-              <div className="relative flex items-center justify-between">
-                <div>
-                  <div className="text-[14px] font-semibold text-white">{s.name}</div>
-                  <div className="mt-0.5 text-[11px] text-white/50">{s.learners} learners</div>
-                </div>
-                <ArrowUpRight className="h-4 w-4 text-white/30 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+              <div className="relative flex items-center gap-2.5">
+                <span className="text-[14px] font-medium text-white">{s.name}</span>
+                <span className="text-[11px] text-white/40">{s.learners}</span>
+                <ArrowUpRight className="h-3 w-3 text-white/20 transition-all group-hover:text-white/60 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </div>
             </motion.a>
           ))}
         </div>
+
+        <p className="mt-8 text-center text-[12px] text-white/35">
+          …and 200+ more across languages, frameworks, systems, and concepts.
+        </p>
       </div>
     </section>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────── */
-/*  DASHBOARD MOCK                                                */
-/* ────────────────────────────────────────────────────────────── */
-
-function DashboardShowcase() {
-  return (
-    <section className="relative border-b border-white/[0.06] py-28">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <Eyebrow>Your progress</Eyebrow>
-          <h2 className="mt-5 font-sans text-4xl font-semibold tracking-[-0.03em] text-white sm:text-5xl">
-            A map of what you know.
-          </h2>
-          <p className="mt-4 text-[16px] text-white/60">
-            Forget "10 lessons completed." MeisterUp shows you mastery, retention, velocity, and
-            where to invest next.
-          </p>
-        </div>
-
-        <div className="mt-14 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-black">
-          <div className="grid grid-cols-12 gap-0 border-b border-white/[0.06]">
-            <div className="col-span-3 border-r border-white/[0.06] p-5">
-              <div className="text-[10px] uppercase tracking-widest text-white/40">
-                Current skill
-              </div>
-              <div className="mt-1.5 text-[18px] font-semibold text-white">Python</div>
-              <div className="mt-4 space-y-4">
-                <Metric label="Overall mastery" value="72%" />
-                <Metric label="Concepts mastered" value="41 / 68" />
-                <Metric label="Retention (7-day)" value="94%" />
-                <Metric label="Learning velocity" value="+12% wk" tone="emerald" />
-              </div>
-            </div>
-            <div className="col-span-6 border-r border-white/[0.06] p-5">
-              <div className="flex items-center justify-between">
-                <div className="text-[10px] uppercase tracking-widest text-white/40">
-                  Mastery over time
-                </div>
-                <div className="flex gap-1 text-[10px] text-white/40">
-                  <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-white/70">30d</span>
-                  <span className="px-1.5 py-0.5">90d</span>
-                  <span className="px-1.5 py-0.5">All</span>
-                </div>
-              </div>
-              <MasteryChart />
-            </div>
-            <div className="col-span-3 p-5">
-              <div className="text-[10px] uppercase tracking-widest text-white/40">Next up</div>
-              <div className="mt-3 space-y-2.5">
-                {[
-                  { c: "Context managers", m: "prereq mastered", t: "5 min" },
-                  { c: "AsyncIO patterns", m: "weakness detected", t: "9 min" },
-                  { c: "Metaclasses", m: "stretch concept", t: "12 min" },
-                ].map((r) => (
-                  <div
-                    key={r.c}
-                    className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3"
-                  >
-                    <div className="text-[13px] font-medium text-white">{r.c}</div>
-                    <div className="mt-1 flex items-center justify-between text-[11px] text-white/50">
-                      <span>{r.m}</span>
-                      <span className="font-mono">{r.t}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="p-5">
-            <div className="flex items-center justify-between">
-              <div className="text-[10px] uppercase tracking-widest text-white/40">
-                Concept heatmap
-              </div>
-              <div className="flex items-center gap-2 text-[10px] text-white/40">
-                <span>Weak</span>
-                <div className="flex gap-0.5">
-                  {[
-                    "bg-rose-500/70",
-                    "bg-amber-400/70",
-                    "bg-yellow-300/70",
-                    "bg-lime-400/70",
-                    "bg-emerald-400/80",
-                  ].map((c) => (
-                    <div key={c} className={cn("h-2 w-4 rounded-sm", c)} />
-                  ))}
-                </div>
-                <span>Mastered</span>
-              </div>
-            </div>
-            <Heatmap />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Metric({ label, value, tone }: { label: string; value: string; tone?: "emerald" }) {
-  return (
-    <div>
-      <div className="text-[11px] text-white/50">{label}</div>
-      <div
-        className={cn(
-          "mt-0.5 font-mono text-[18px] font-semibold tabular-nums",
-          tone === "emerald" ? "text-emerald-300" : "text-white",
-        )}
-      >
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function MasteryChart() {
-  const pts = useMemo(() => {
-    const arr: number[] = [];
-    let v = 22;
-    for (let i = 0; i < 30; i++) {
-      v += Math.random() * 4 - 0.5;
-      v = Math.max(20, Math.min(80, v));
-      arr.push(v);
-    }
-    return arr;
-  }, []);
-  const w = 600;
-  const h = 160;
-  const path = pts
-    .map((v, i) => {
-      const x = (i / (pts.length - 1)) * w;
-      const y = h - ((v - 20) / 60) * h;
-      return `${i === 0 ? "M" : "L"} ${x} ${y}`;
-    })
-    .join(" ");
-  const fill = `${path} L ${w} ${h} L 0 ${h} Z`;
-
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="mt-4 h-40 w-full">
-      <defs>
-        <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {[0, 1, 2, 3].map((i) => (
-        <line
-          key={i}
-          x1="0"
-          x2={w}
-          y1={(h / 3) * i}
-          y2={(h / 3) * i}
-          stroke="#ffffff"
-          strokeOpacity="0.05"
-        />
-      ))}
-      <motion.path
-        d={fill}
-        fill="url(#fillGrad)"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      />
-      <motion.path
-        d={path}
-        fill="none"
-        stroke="#a78bfa"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        initial={{ pathLength: 0 }}
-        whileInView={{ pathLength: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-      />
-    </svg>
-  );
-}
-
-function Heatmap() {
-  const cells = useMemo(() => {
-    return Array.from({ length: 7 * 24 }, () => Math.random());
-  }, []);
-  const colorFor = (v: number) => {
-    if (v < 0.2) return "bg-white/[0.04]";
-    if (v < 0.4) return "bg-rose-500/60";
-    if (v < 0.55) return "bg-amber-400/60";
-    if (v < 0.7) return "bg-yellow-300/60";
-    if (v < 0.85) return "bg-lime-400/70";
-    return "bg-emerald-400/80";
-  };
-  return (
-    <div
-      className="mt-4 grid grid-cols-24 gap-1"
-      style={{ gridTemplateColumns: "repeat(24, minmax(0,1fr))" }}
-    >
-      {cells.map((v, i) => (
-        <div
-          key={i}
-          className={cn("h-4 rounded-sm transition hover:scale-125", colorFor(v))}
-          title={`concept ${i + 1}`}
-        />
-      ))}
-    </div>
   );
 }
 
@@ -1439,30 +831,67 @@ const QUOTES = [
 function Testimonials() {
   return (
     <section className="relative border-b border-white/[0.06] py-28">
+      <GlowOrb className="left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 bg-indigo-500/15" />
       <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="mx-auto max-w-xl text-center">
+          <Eyebrow>Testimonials</Eyebrow>
+          <h2 className="mt-5 font-sans text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+            Loved by engineers
+            <span className="text-white/40"> worldwide.</span>
+          </h2>
+        </div>
+
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
           {QUOTES.map((q, i) => (
             <motion.figure
               key={q.a}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: i * 0.08 }}
-              className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent p-7"
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-8 transition hover:border-white/20"
             >
-              <blockquote className="text-[15px] leading-relaxed text-white/85">"{q.q}"</blockquote>
-              <figcaption className="mt-6 flex items-center gap-3 border-t border-white/[0.06] pt-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-white/20 to-white/5 text-[12px] font-semibold text-white">
+              {/* Decorative quote mark */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -left-1 -top-3 select-none font-serif text-[96px] leading-none text-white/[0.04]"
+              >
+                &ldquo;
+              </div>
+
+              {/* Star rating */}
+              <div className="mb-5 flex gap-0.5">
+                {[...Array(5)].map((_, j) => (
+                  <svg
+                    key={j}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-4 w-4 text-amber-400"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+
+              <blockquote className="relative text-[15px] leading-relaxed text-white/80">
+                &ldquo;{q.q}&rdquo;
+              </blockquote>
+
+              <figcaption className="mt-6 flex items-center gap-3 border-t border-white/[0.06] pt-5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400/30 to-fuchsia-400/30 ring-1 ring-white/10 text-[13px] font-semibold text-white">
                   {q.a
                     .split(" ")
                     .map((n) => n[0])
                     .join("")}
                 </div>
                 <div>
-                  <div className="text-[13px] font-medium text-white">{q.a}</div>
-                  <div className="text-[11px] text-white/50">{q.r}</div>
+                  <div className="text-[14px] font-medium text-white">{q.a}</div>
+                  <div className="text-[12px] text-white/50">{q.r}</div>
                 </div>
               </figcaption>
+
+              {/* Hover glow */}
+              <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-indigo-500/[0.06] opacity-0 blur-3xl transition-opacity group-hover:opacity-100" />
             </motion.figure>
           ))}
         </div>
@@ -1470,9 +899,11 @@ function Testimonials() {
     </section>
   );
 }
+
 /* ────────────────────────────────────────────────────────────── */
 /*  CTA + FOOTER                                                  */
 /* ────────────────────────────────────────────────────────────── */
+
 function CTA() {
   return (
     <section className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden border-t border-white/[0.06] py-28 sm:min-h-[90vh]">
@@ -1490,13 +921,14 @@ function CTA() {
           under a minute.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="#demo"
+          <Link
+            to="/signin"
+            search={{ mode: "signup" }}
             className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-black hover:bg-white/90"
           >
             Start free
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
+          </Link>
           <a
             href="#skills"
             className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-6 py-3 text-[14px] font-medium text-white backdrop-blur hover:bg-white/[0.06]"
@@ -1549,12 +981,8 @@ function LandingPage() {
       <Nav />
       <Hero />
       <HowItWorks />
-      <Pillars />
-      <AssessmentDemo />
-      <ActivityTypes />
       <SwipeDemo />
-      <SkillLibrary />
-      <DashboardShowcase />
+      <SkillStrip />
       <Testimonials />
       <CTA />
       <Footer />
