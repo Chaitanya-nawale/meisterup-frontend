@@ -1548,6 +1548,7 @@ function LandingPage() {
     <div className="relative min-h-screen bg-black text-white antialiased">
       <Nav />
       <Hero />
+      <HowItWorks />
       <Pillars />
       <AssessmentDemo />
       <ActivityTypes />
