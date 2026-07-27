@@ -61,8 +61,8 @@ function SettingsPage() {
   useEffect(() => {
     if (notifPrefs) {
       setDailyReminder(notifPrefs.daily_reminder ?? true);
-      setWeeklySummary(notifPrefs.weekly_summary ?? true);
-      setStreakDanger(notifPrefs.streak_danger_alert ?? true);
+      setWeeklySummary(notifPrefs.weekly_summary_email ?? true);
+      setStreakDanger(notifPrefs.streak_warning ?? true);
     }
   }, [notifPrefs]);
 
@@ -70,8 +70,8 @@ function SettingsPage() {
     updateNotifPrefs(
       {
         daily_reminder: dailyReminder,
-        weekly_summary: weeklySummary,
-        streak_danger_alert: streakDanger,
+        weekly_summary_email: weeklySummary,
+        streak_warning: streakDanger,
       },
       {
         onSuccess: () => toast.success("Preferences saved"),
