@@ -200,9 +200,8 @@ function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-white/60">
-            MeisterUp models your existing knowledge, finds the exact gaps that matter, and
-            generates a personalized curriculum for any technical skill — from Rust to system design
-            to prompt engineering.
+            Answer a few questions. We find the gaps in what you already know, then teach only
+            those — one concept at a time, for any technical skill.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
@@ -214,11 +213,11 @@ function Hero() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
             <a
-              href="#platform"
+              href="#how"
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-5 py-2.5 text-[14px] font-medium text-white/90 backdrop-blur transition hover:bg-white/[0.06]"
             >
               <Play className="h-3.5 w-3.5" />
-              See how it thinks
+              See how it works
             </a>
           </div>
 
@@ -472,6 +471,66 @@ function KnowledgeGraph() {
 /* ────────────────────────────────────────────────────────────── */
 
 function Pillars() {
+  return <PillarsInner />;
+}
+
+/* Plain-language 3-step explainer, right under the hero */
+
+function HowItWorks() {
+  const steps = [
+    {
+      n: "01",
+      title: "Pick a skill",
+      body: "Rust, React, system design, SQL, prompt engineering — anything technical.",
+    },
+    {
+      n: "02",
+      title: "Show what you know",
+      body: "A short, adaptive check figures out your real level in about a minute.",
+    },
+    {
+      n: "03",
+      title: "Learn only the gaps",
+      body: "You get one concept at a time — never what you already understand.",
+    },
+  ];
+  return (
+    <section id="how" className="relative border-b border-white/[0.06] py-24">
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="mx-auto max-w-xl text-center">
+          <Eyebrow>How it works</Eyebrow>
+          <h2 className="mt-5 font-sans text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+            Three steps.
+            <span className="text-white/40"> That's the whole idea.</span>
+          </h2>
+        </div>
+
+        <div className="mt-14 grid gap-4 sm:grid-cols-3">
+          {steps.map((s, i) => (
+            <motion.div
+              key={s.n}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ delay: i * 0.08, duration: 0.45 }}
+              className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-6"
+            >
+              <div className="font-mono text-[11px] tracking-[0.2em] text-white/35">{s.n}</div>
+              <div className="mt-3 text-[16px] font-semibold text-white">{s.title}</div>
+              <p className="mt-2 text-[13.5px] leading-relaxed text-white/55">{s.body}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <p className="mt-10 text-center text-[13px] text-white/40">
+          Most people finish their first lesson in under five minutes.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function PillarsInner() {
   const items = [
     {
       icon: Brain,
@@ -1489,6 +1548,7 @@ function LandingPage() {
     <div className="relative min-h-screen bg-black text-white antialiased">
       <Nav />
       <Hero />
+      <HowItWorks />
       <Pillars />
       <AssessmentDemo />
       <ActivityTypes />

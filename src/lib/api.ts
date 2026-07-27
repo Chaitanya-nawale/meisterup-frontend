@@ -368,7 +368,7 @@ export async function updateStreakAfterSession(userId: string): Promise<void> {
   ) {
     // Check if within freeze window (1 day gap)
     const daysBetween = Math.floor(
-      (new Date(today).getTime() - new Date(lastDate).getTime()) /
+      (new Date(today).getTime() - new Date(lastDate ?? today).getTime()) /
         (1000 * 60 * 60 * 24),
     );
     if (daysBetween === 2) {
