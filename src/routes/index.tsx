@@ -200,9 +200,8 @@ function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-white/60">
-            MeisterUp models your existing knowledge, finds the exact gaps that matter, and
-            generates a personalized curriculum for any technical skill — from Rust to system design
-            to prompt engineering.
+            Answer a few questions. We find the gaps in what you already know, then teach only
+            those — one concept at a time, for any technical skill.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
