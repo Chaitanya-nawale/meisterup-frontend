@@ -52,7 +52,7 @@ function DashboardNav() {
             <Menu className="h-5 w-5" />
           </button>
           <Link to="/" className="group flex items-center gap-2">
-            <img src="/favicon.ico" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
+            <img src="/favicon.png" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
             <span className="text-[15px] font-semibold tracking-tight text-white">MeisterUp</span>
           </Link>
         </div>

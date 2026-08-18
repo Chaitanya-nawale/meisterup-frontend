@@ -64,7 +64,7 @@ function Nav() {
     >
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         <Link to="/" className="group flex items-center gap-2">
-          <img src="/favicon.ico" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
+          <img src="/favicon.png" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
           <span className="text-[15px] font-semibold tracking-tight text-white">MeisterUp</span>
           <span className="ml-1 rounded-full border border-white/10 bg-white/5 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-widest text-white/50">
             Beta
@@ -297,7 +297,7 @@ function PricingPage() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
-              <img src="/favicon.ico" alt="MeisterUp Logo" className="h-5 w-5 object-contain" />
+              <img src="/favicon.png" alt="MeisterUp Logo" className="h-5 w-5 object-contain" />
               <span className="font-semibold tracking-tight text-white">MeisterUp</span>
             </Link>
             <span className="text-white/20">•</span>

@@ -92,7 +92,7 @@ function OnboardingPage() {
 
       <header className="flex h-16 items-center px-6">
         <div className="flex items-center gap-2">
-          <img src="/favicon.ico" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
+          <img src="/favicon.png" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
           <span className="text-[15px] font-semibold tracking-tight">MeisterUp</span>
         </div>
       </header>
