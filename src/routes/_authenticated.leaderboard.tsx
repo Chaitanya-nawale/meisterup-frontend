@@ -1,15 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Trophy,
-  Medal,
-  Flame,
-  ShieldCheck,
-  Search,
-  Check,
-  Loader2,
-} from "lucide-react";
+import { Trophy, Medal, Flame, ShieldCheck, Search, Check, Loader2 } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { cn } from "../lib/utils";
 import { useLeaderboard } from "../hooks/useDashboard";
@@ -31,9 +23,8 @@ function LeaderboardPage() {
 
   const { data: allRows, isLoading } = useLeaderboard(100);
 
-  const rows = (allRows ?? []).filter((r) =>
-    !search ||
-    (r.display_name ?? "").toLowerCase().includes(search.toLowerCase()),
+  const rows = (allRows ?? []).filter(
+    (r) => !search || (r.display_name ?? "").toLowerCase().includes(search.toLowerCase()),
   );
 
   const currentUserRow = (allRows ?? []).find((r) => r.user_id === user?.id);
@@ -135,72 +126,73 @@ function LeaderboardPage() {
                 </div>
               )}
 
-              {!isLoading && rows.map((row, i) => {
-                const isCurrentUser = row.user_id === user?.id;
-                const rank = row.rank ?? i + 1;
-                return (
-                  <motion.div
-                    key={row.user_id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: i * 0.01 }}
-                    className={cn(
-                      "grid grid-cols-[60px_1fr_100px_100px] items-center px-6 py-4 transition hover:bg-white/[0.02]",
-                      isCurrentUser && "bg-indigo-500/[0.08] hover:bg-indigo-500/[0.12]",
-                    )}
-                  >
-                    <div className="text-center">
-                      {rank === 1 ? (
-                        <Medal className="mx-auto h-5 w-5 text-yellow-400" />
-                      ) : rank === 2 ? (
-                        <Medal className="mx-auto h-5 w-5 text-gray-300" />
-                      ) : rank === 3 ? (
-                        <Medal className="mx-auto h-5 w-5 text-amber-700" />
-                      ) : (
-                        <span className="text-[14px] font-semibold text-white/40">{rank}</span>
+              {!isLoading &&
+                rows.map((row, i) => {
+                  const isCurrentUser = row.user_id === user?.id;
+                  const rank = row.rank ?? i + 1;
+                  return (
+                    <motion.div
+                      key={row.user_id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: i * 0.01 }}
+                      className={cn(
+                        "grid grid-cols-[60px_1fr_100px_100px] items-center px-6 py-4 transition hover:bg-white/[0.02]",
+                        isCurrentUser && "bg-indigo-500/[0.08] hover:bg-indigo-500/[0.12]",
                       )}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {row.avatar_url ? (
-                        <img
-                          src={row.avatar_url}
-                          alt=""
-                          className="h-8 w-8 rounded-full bg-white/10 object-cover"
+                    >
+                      <div className="text-center">
+                        {rank === 1 ? (
+                          <Medal className="mx-auto h-5 w-5 text-yellow-400" />
+                        ) : rank === 2 ? (
+                          <Medal className="mx-auto h-5 w-5 text-gray-300" />
+                        ) : rank === 3 ? (
+                          <Medal className="mx-auto h-5 w-5 text-amber-700" />
+                        ) : (
+                          <span className="text-[14px] font-semibold text-white/40">{rank}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {row.avatar_url ? (
+                          <img
+                            src={row.avatar_url}
+                            alt=""
+                            className="h-8 w-8 rounded-full bg-white/10 object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-500/20 text-[13px] font-semibold text-indigo-300">
+                            {(row.display_name ?? "?").charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <span
+                          className={cn(
+                            "text-[14px] font-medium",
+                            isCurrentUser ? "text-indigo-300" : "text-white",
+                          )}
+                        >
+                          {row.display_name ?? "Anonymous"}
+                          {isCurrentUser && (
+                            <span className="ml-2 text-[11px] text-indigo-400/70">(you)</span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="hidden sm:flex items-center justify-end gap-1.5">
+                        <Flame
+                          className={cn(
+                            "h-3.5 w-3.5",
+                            (row.current_streak ?? 0) > 3 ? "text-amber-400" : "text-white/20",
+                          )}
                         />
-                      ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-500/20 text-[13px] font-semibold text-indigo-300">
-                          {(row.display_name ?? "?").charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <span
-                        className={cn(
-                          "text-[14px] font-medium",
-                          isCurrentUser ? "text-indigo-300" : "text-white",
-                        )}
-                      >
-                        {row.display_name ?? "Anonymous"}
-                        {isCurrentUser && (
-                          <span className="ml-2 text-[11px] text-indigo-400/70">(you)</span>
-                        )}
-                      </span>
-                    </div>
-                    <div className="hidden sm:flex items-center justify-end gap-1.5">
-                      <Flame
-                        className={cn(
-                          "h-3.5 w-3.5",
-                          (row.current_streak ?? 0) > 3 ? "text-amber-400" : "text-white/20",
-                        )}
-                      />
-                      <span className="text-[14px] font-medium text-white/80">
-                        {row.current_streak ?? 0}
-                      </span>
-                    </div>
-                    <div className="text-right text-[14px] font-semibold text-white">
-                      {(row.weekly_xp ?? 0).toLocaleString()}
-                    </div>
-                  </motion.div>
-                );
-              })}
+                        <span className="text-[14px] font-medium text-white/80">
+                          {row.current_streak ?? 0}
+                        </span>
+                      </div>
+                      <div className="text-right text-[14px] font-semibold text-white">
+                        {(row.weekly_xp ?? 0).toLocaleString()}
+                      </div>
+                    </motion.div>
+                  );
+                })}
             </div>
           </div>
 

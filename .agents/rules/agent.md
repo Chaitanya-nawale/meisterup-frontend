@@ -19,29 +19,29 @@ The current codebase is the **Senior Review Gym** — an interactive Code Compre
 
 ## 2. Tech Stack
 
-| Layer            | Technology & Version                                                              |
-| ---------------- | --------------------------------------------------------------------------------- |
-| Language         | TypeScript 5 (`^5.8.3`)                                                           |
-| Runtime / PM     | [Bun](https://bun.sh) (package manager + runtime)                                 |
-| UI Library       | [React 19](https://react.dev) (`^19.2.0`)                                         |
-| Meta-Framework   | [TanStack Start](https://tanstack.com/start) (`^1.168.26`) — SSR-enabled          |
-| Routing          | [TanStack Router](https://tanstack.com/router) (`^1.170.16`) — file-based         |
-| Bundler          | [Vite 8](https://vite.dev) (`^8.0.16`) via `@lovable.dev/vite-tanstack-config`    |
-| Server Engine    | Nitro (`3.0.x-beta`) — Cloudflare target                                          |
-| Styling          | [Tailwind CSS v4](https://tailwindcss.com) (`^4.2.1`)                             |
-| UI Primitives    | [Radix UI](https://www.radix-ui.com) (full suite — see package.json)              |
-| UI Pattern       | shadcn/ui (`src/components/ui/`)                                                  |
-| Animation        | [Framer Motion](https://www.framer-motion.com) (`^12.42.2`)                       |
-| Icons            | [Lucide React](https://lucide.dev) (`^0.575.0`)                                   |
+| Layer            | Technology & Version                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| Language         | TypeScript 5 (`^5.8.3`)                                                                         |
+| Runtime / PM     | [Bun](https://bun.sh) (package manager + runtime)                                               |
+| UI Library       | [React 19](https://react.dev) (`^19.2.0`)                                                       |
+| Meta-Framework   | [TanStack Start](https://tanstack.com/start) (`^1.168.26`) — SSR-enabled                        |
+| Routing          | [TanStack Router](https://tanstack.com/router) (`^1.170.16`) — file-based                       |
+| Bundler          | [Vite 8](https://vite.dev) (`^8.0.16`) via `@lovable.dev/vite-tanstack-config`                  |
+| Server Engine    | Nitro (`3.0.x-beta`) — Cloudflare target                                                        |
+| Styling          | [Tailwind CSS v4](https://tailwindcss.com) (`^4.2.1`)                                           |
+| UI Primitives    | [Radix UI](https://www.radix-ui.com) (full suite — see package.json)                            |
+| UI Pattern       | shadcn/ui (`src/components/ui/`)                                                                |
+| Animation        | [Framer Motion](https://www.framer-motion.com) (`^12.42.2`)                                     |
+| Icons            | [Lucide React](https://lucide.dev) (`^0.575.0`)                                                 |
 | Forms            | [React Hook Form](https://react-hook-form.com) (`^7.71.2`) + [Zod](https://zod.dev) (`^3.24.2`) |
-| Data Fetching    | [TanStack Query](https://tanstack.com/query) (`^5.101.1`)                         |
-| Charts           | [Recharts](https://recharts.org) (`^2.15.4`)                                      |
-| Backend / Auth   | [Supabase](https://supabase.com) (`@supabase/supabase-js ^2.48.0`) — PostgreSQL + Auth + RLS |
-| Notifications    | [Sonner](https://sonner.emilkowal.ski) (`^2.0.7`) toast system                    |
-| Class Utilities  | `clsx ^2.1.1` + `tailwind-merge ^3.5.0` → `cn()` helper                          |
-| Carousel         | `embla-carousel-react ^8.6.0`                                                     |
-| Date utilities   | `date-fns ^4.1.0`                                                                 |
-| Animations (CSS) | `tw-animate-css ^1.3.4`                                                           |
+| Data Fetching    | [TanStack Query](https://tanstack.com/query) (`^5.101.1`)                                       |
+| Charts           | [Recharts](https://recharts.org) (`^2.15.4`)                                                    |
+| Backend / Auth   | [Supabase](https://supabase.com) (`@supabase/supabase-js ^2.48.0`) — PostgreSQL + Auth + RLS    |
+| Notifications    | [Sonner](https://sonner.emilkowal.ski) (`^2.0.7`) toast system                                  |
+| Class Utilities  | `clsx ^2.1.1` + `tailwind-merge ^3.5.0` → `cn()` helper                                         |
+| Carousel         | `embla-carousel-react ^8.6.0`                                                                   |
+| Date utilities   | `date-fns ^4.1.0`                                                                               |
+| Animations (CSS) | `tw-animate-css ^1.3.4`                                                                         |
 
 ---
 
@@ -104,6 +104,7 @@ senior-review-gym-main/
 ### 4.1 Vite Config — Do NOT add plugins manually
 
 `@lovable.dev/vite-tanstack-config` already bundles:
+
 - `tanstackStart`, `viteReact`, `tailwindcss`, `tsConfigPaths`, TanStack devtools
 - Nitro (build-only, Cloudflare target), `VITE_*` env injection, `@` path alias
 - React/TanStack dedupe, error logger, sandbox detection
@@ -175,24 +176,29 @@ bun run format       # Run Prettier
 ## 7. Code Conventions
 
 ### Component Patterns
+
 - Follow the **shadcn/ui pattern**: Radix UI primitives + Tailwind CSS styling in `src/components/ui/`
 - Use `class-variance-authority` (`cva`) for variant-driven component APIs
 - Keep components focused and reusable; co-locate component-specific logic
 
 ### TypeScript
+
 - Strict TypeScript throughout — avoid `any`; use `unknown` + type narrowing
 - Prefer interfaces for object shapes, `type` aliases for unions/intersections
 - Use Zod schemas for all form validation and runtime data parsing
 
 ### State & Data Fetching
+
 - Server state: **TanStack Query** (`useQuery`, `useMutation`, `useQueryClient`)
 - Form state: **React Hook Form** + **Zod** resolvers
 - Local/UI state: `useState`, `useReducer`, or Framer Motion values
 
 ### Toast Notifications
+
 - Use **Sonner** (`import { toast } from 'sonner'`) for all toast/notification UI
 
 ### File Size Awareness
+
 - `index.tsx` (62KB) and `skills_.$skillId.tsx` (58KB) are large files
 - When editing them, prefer targeted, surgical edits over full rewrites
 - Consider extracting reusable sub-components to `src/components/` when adding significant new UI
@@ -202,17 +208,20 @@ bun run format       # Run Prettier
 ## 8. Claude-Specific Guidance
 
 ### Before Making Any Change
+
 1. **Read the relevant route file(s)** to understand existing state, hooks, and component structure
 2. **Check `src/lib/`** for existing utilities before writing new ones
 3. **Check `src/components/ui/`** for existing UI primitives before building from scratch
 
 ### When Adding Features
+
 - Auth-gated features → add to `_authenticated.*` routes or a new `_authenticated.<feature>.tsx` file
 - Public features → add to `index.tsx`, `faq.tsx`, `pricing.tsx`, or a new top-level route
 - New Supabase tables → add a migration file in `supabase/migrations/`
 - New reusable UI → add to `src/components/ui/` following the shadcn/ui pattern
 
 ### Dangerous Patterns to Avoid
+
 - ❌ Editing `routeTree.gen.ts` directly
 - ❌ Adding Vite plugins already bundled by `@lovable.dev/vite-tanstack-config`
 - ❌ Using browser APIs (`window`, `document`, `localStorage`) at module level without SSR guard

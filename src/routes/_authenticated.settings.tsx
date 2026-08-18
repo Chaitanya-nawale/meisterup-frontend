@@ -2,7 +2,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../lib/auth";
 import { Settings, User, Bell, Shield, LogOut, Loader2, Check } from "lucide-react";
-import { useUserProfile, useUpdateProfile, useNotificationPrefs, useUpdateNotificationPrefs } from "../hooks/useProfile";
+import {
+  useUserProfile,
+  useUpdateProfile,
+  useNotificationPrefs,
+  useUpdateNotificationPrefs,
+} from "../hooks/useProfile";
 import { cn } from "../lib/utils";
 import { toast } from "sonner";
 
@@ -30,10 +35,7 @@ function SettingsPage() {
   useEffect(() => {
     if (profile) {
       setDisplayName(
-        profile.display_name ||
-          user?.user_metadata?.full_name ||
-          user?.email?.split("@")[0] ||
-          "",
+        profile.display_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "",
       );
       setBio(profile.bio ?? "");
     }
@@ -112,7 +114,10 @@ function SettingsPage() {
               <User className="h-4 w-4" />
               Profile details
             </button>
-            <button onClick={() => setActiveTab("notifications")} className={tabClass("notifications")}>
+            <button
+              onClick={() => setActiveTab("notifications")}
+              className={tabClass("notifications")}
+            >
               <Bell className="h-4 w-4" />
               Notifications
             </button>

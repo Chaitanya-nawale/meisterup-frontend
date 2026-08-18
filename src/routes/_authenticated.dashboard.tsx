@@ -56,11 +56,12 @@ function Greeting() {
   const name = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Developer";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  const streakMsg = currentStreak > 1
-    ? `You've been on a ${currentStreak}-day streak. Keep building momentum.`
-    : currentStreak === 1
-    ? "You started a streak today. Come back tomorrow to keep it going!"
-    : "Start practicing today to begin your streak.";
+  const streakMsg =
+    currentStreak > 1
+      ? `You've been on a ${currentStreak}-day streak. Keep building momentum.`
+      : currentStreak === 1
+        ? "You started a streak today. Come back tomorrow to keep it going!"
+        : "Start practicing today to begin your streak.";
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -70,9 +71,7 @@ function Greeting() {
       <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-white sm:text-[32px]">
         {greeting}, {name}.
       </h1>
-      <p className="mt-1.5 text-[15px] text-white/50">
-        {streakMsg}
-      </p>
+      <p className="mt-1.5 text-[15px] text-white/50">{streakMsg}</p>
     </motion.div>
   );
 }
@@ -143,8 +142,6 @@ function StatsRow() {
 /*  CONTINUE LEARNING / RECOMMENDED                                */
 /* ────────────────────────────────────────────────────────────── */
 
-
-
 function ContinueLearning() {
   const { data: continueItems, isLoading } = useContinueLearning(3);
 
@@ -168,68 +165,74 @@ function ContinueLearning() {
       </div>
 
       <div className="mt-4 grid gap-3 md:grid-cols-3">
-        {isLoading && (
+        {isLoading &&
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-28 animate-pulse rounded-xl border border-white/10 bg-white/[0.02]" />
-          ))
-        )}
+            <div
+              key={i}
+              className="h-28 animate-pulse rounded-xl border border-white/10 bg-white/[0.02]"
+            />
+          ))}
         {isEmpty && (
           <div className="col-span-3 py-8 text-center text-[14px] text-white/30">
             <BookOpen className="mx-auto mb-3 h-8 w-8 opacity-40" />
             <p>Start a skill to see recommendations here.</p>
-            <Link to="/skills" className="mt-2 inline-block text-indigo-400 hover:text-indigo-300 transition-colors">
+            <Link
+              to="/skills"
+              className="mt-2 inline-block text-indigo-400 hover:text-indigo-300 transition-colors"
+            >
               Browse skills →
             </Link>
           </div>
         )}
-        {!isLoading && (continueItems ?? []).map((c) => (
-          <Link
-            key={c.concept_slug}
-            to="/skills/$skillId"
-            params={{ skillId: c.skill_slug }}
-            className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-5 transition hover:border-white/20 block"
-          >
-            <div
-              className={cn(
-                "absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100",
-                c.color_from,
-                c.color_to,
-              )}
-            />
-            <div className="relative">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04]">
-                    <Zap className="h-4 w-4 text-white/70" />
+        {!isLoading &&
+          (continueItems ?? []).map((c) => (
+            <Link
+              key={c.concept_slug}
+              to="/skills/$skillId"
+              params={{ skillId: c.skill_slug }}
+              className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] p-5 transition hover:border-white/20 block"
+            >
+              <div
+                className={cn(
+                  "absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100",
+                  c.color_from,
+                  c.color_to,
+                )}
+              />
+              <div className="relative">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04]">
+                      <Zap className="h-4 w-4 text-white/70" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] text-white/40">{c.skill_name}</div>
+                      <div className="text-[14px] font-semibold text-white">{c.concept_name}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-[11px] text-white/40">{c.skill_name}</div>
-                    <div className="text-[14px] font-semibold text-white">{c.concept_name}</div>
-                  </div>
+                  <ArrowUpRight className="h-4 w-4 text-white/20 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white/60" />
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-white/20 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white/60" />
-              </div>
 
-              <div className="mt-4 flex items-center justify-between text-[11px] text-white/50">
-                <span className="flex items-center gap-1">
-                  <Brain className="h-3 w-3" /> {c.reason}
-                </span>
-                <span className="flex items-center gap-1 font-mono">
-                  <Clock className="h-3 w-3" /> {c.estimatedMinutes}m
-                </span>
-              </div>
+                <div className="mt-4 flex items-center justify-between text-[11px] text-white/50">
+                  <span className="flex items-center gap-1">
+                    <Brain className="h-3 w-3" /> {c.reason}
+                  </span>
+                  <span className="flex items-center gap-1 font-mono">
+                    <Clock className="h-3 w-3" /> {c.estimatedMinutes}m
+                  </span>
+                </div>
 
-              <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-white/[0.06]">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${c.progress}%` }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
-                  className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-400"
-                />
+                <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${c.progress}%` }}
+                    transition={{ delay: 0.6, duration: 0.8 }}
+                    className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-400"
+                  />
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
       </div>
     </motion.div>
   );
@@ -238,7 +241,6 @@ function ContinueLearning() {
 /* ────────────────────────────────────────────────────────────── */
 /*  MASTERY CHART                                                  */
 /* ────────────────────────────────────────────────────────────── */
-
 
 function MasteryChart() {
   const pts = useMemo(() => {

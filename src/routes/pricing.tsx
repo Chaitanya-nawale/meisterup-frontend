@@ -71,16 +71,25 @@ function Nav() {
           </span>
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
-          <Link to="/" className="text-[13px] font-medium text-white/60 transition-colors hover:text-white">
+          <Link
+            to="/"
+            className="text-[13px] font-medium text-white/60 transition-colors hover:text-white"
+          >
             Home
           </Link>
-          <Link to="/skills" className="text-[13px] font-medium text-white/60 transition-colors hover:text-white">
+          <Link
+            to="/skills"
+            className="text-[13px] font-medium text-white/60 transition-colors hover:text-white"
+          >
             Skills
           </Link>
           <Link to="/pricing" className="text-[13px] font-medium text-white transition-colors">
             Pricing
           </Link>
-          <Link to="/faq" className="text-[13px] font-medium text-white/60 transition-colors hover:text-white">
+          <Link
+            to="/faq"
+            className="text-[13px] font-medium text-white/60 transition-colors hover:text-white"
+          >
             FAQ
           </Link>
         </nav>
@@ -185,7 +194,8 @@ function PricingPage() {
             Invest in your engineering leverage.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-white/60">
-            Start with one skill free forever. Upgrade to Pro or Team when you're ready to accelerate your entire career repertoire.
+            Start with one skill free forever. Upgrade to Pro or Team when you're ready to
+            accelerate your entire career repertoire.
           </p>
         </div>
       </section>
@@ -219,7 +229,9 @@ function PricingPage() {
                 </div>
 
                 <div className="mt-4 flex items-baseline gap-1">
-                  <span className="text-4xl font-semibold tracking-tight text-white">{p.price}</span>
+                  <span className="text-4xl font-semibold tracking-tight text-white">
+                    {p.price}
+                  </span>
                   {p.per && <span className="text-[13px] text-white/50">{p.per}</span>}
                 </div>
                 <p className="mt-3 text-[13px] leading-relaxed text-white/60">{p.body}</p>
@@ -258,7 +270,8 @@ function PricingPage() {
               Have questions about plans or billing?
             </h3>
             <p className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-white/60">
-              Our team is here to help clarify plan details, enterprise seating, or custom learning needs.
+              Our team is here to help clarify plan details, enterprise seating, or custom learning
+              needs.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link
@@ -288,7 +301,9 @@ function PricingPage() {
               <span className="font-semibold tracking-tight text-white">MeisterUp</span>
             </Link>
             <span className="text-white/20">•</span>
-            <span className="text-[12px] text-white/40">© {new Date().getFullYear()} MeisterUp, Inc.</span>
+            <span className="text-[12px] text-white/40">
+              © {new Date().getFullYear()} MeisterUp, Inc.
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-6 text-[12px]">

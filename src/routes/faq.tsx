@@ -71,13 +71,22 @@ function Nav() {
           </span>
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
-          <Link to="/" className="text-[13px] font-medium text-white/60 transition-colors hover:text-white">
+          <Link
+            to="/"
+            className="text-[13px] font-medium text-white/60 transition-colors hover:text-white"
+          >
             Home
           </Link>
-          <Link to="/skills" className="text-[13px] font-medium text-white/60 transition-colors hover:text-white">
+          <Link
+            to="/skills"
+            className="text-[13px] font-medium text-white/60 transition-colors hover:text-white"
+          >
             Skills
           </Link>
-          <Link to="/pricing" className="text-[13px] font-medium text-white/60 transition-colors hover:text-white">
+          <Link
+            to="/pricing"
+            className="text-[13px] font-medium text-white/60 transition-colors hover:text-white"
+          >
             Pricing
           </Link>
           <Link to="/faq" className="text-[13px] font-medium text-white transition-colors">
@@ -174,7 +183,8 @@ function FAQContent() {
             Questions, answered.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-white/60">
-            Everything you need to know about the platform, how our adaptive model works, and getting started.
+            Everything you need to know about the platform, how our adaptive model works, and
+            getting started.
           </p>
         </div>
 
@@ -245,7 +255,9 @@ function Footer() {
             <span className="font-semibold tracking-tight text-white">MeisterUp</span>
           </Link>
           <span className="text-white/20">•</span>
-          <span className="text-[12px] text-white/40">© {new Date().getFullYear()} MeisterUp, Inc.</span>
+          <span className="text-[12px] text-white/40">
+            © {new Date().getFullYear()} MeisterUp, Inc.
+          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-6 text-[12px]">

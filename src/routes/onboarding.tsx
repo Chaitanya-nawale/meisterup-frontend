@@ -61,10 +61,12 @@ function OnboardingPage() {
         onboarding_completed_at: new Date().toISOString(),
       });
       // 2. Seed initial streak row
-      await supabase.from("user_streaks").upsert(
-        { user_id: user.id, current_streak: 0, longest_streak: 0 },
-        { onConflict: "user_id", ignoreDuplicates: true },
-      );
+      await supabase
+        .from("user_streaks")
+        .upsert(
+          { user_id: user.id, current_streak: 0, longest_streak: 0 },
+          { onConflict: "user_id", ignoreDuplicates: true },
+        );
       navigate({ to: "/dashboard" });
     } catch (err) {
       console.error("Onboarding save failed:", err);
@@ -153,7 +155,9 @@ function OnboardingPage() {
                           role === r.value ? "border-indigo-500" : "border-white/20",
                         )}
                       >
-                        {role === r.value && <div className="h-2.5 w-2.5 rounded-full bg-indigo-500" />}
+                        {role === r.value && (
+                          <div className="h-2.5 w-2.5 rounded-full bg-indigo-500" />
+                        )}
                       </div>
                     </button>
                   ))}

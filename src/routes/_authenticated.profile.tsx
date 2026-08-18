@@ -40,7 +40,7 @@ const BADGE_ICONS: Record<string, React.ElementType> = {
   Link2,
 };
 function BadgeIcon({ name }: { name: string | null }) {
-  const Icon = (name && BADGE_ICONS[name]) ? BADGE_ICONS[name] : Medal;
+  const Icon = name && BADGE_ICONS[name] ? BADGE_ICONS[name] : Medal;
   return <Icon className="h-6 w-6" />;
 }
 
@@ -117,9 +117,7 @@ function ProfilePage() {
             {name}
           </h1>
           <p className="mt-1 text-[15px] text-white/50">{email}</p>
-          {profile?.bio && (
-            <p className="mt-2 text-[14px] text-white/60 max-w-md">{profile.bio}</p>
-          )}
+          {profile?.bio && <p className="mt-2 text-[14px] text-white/60 max-w-md">{profile.bio}</p>}
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[12px] font-medium text-white/70">
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
@@ -173,7 +171,10 @@ function ProfilePage() {
           {isLoading ? (
             <div className="space-y-3">
               {[1, 2, 3].map((n) => (
-                <div key={n} className="h-20 animate-pulse rounded-2xl border border-white/10 bg-white/[0.02]" />
+                <div
+                  key={n}
+                  className="h-20 animate-pulse rounded-2xl border border-white/10 bg-white/[0.02]"
+                />
               ))}
             </div>
           ) : (stats?.masteryPct ?? 0) > 0 ? (

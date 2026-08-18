@@ -73,8 +73,7 @@ export function useStartSkill() {
   const { user } = useAuth();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (skillId: string) =>
-      upsertUserSkillProgress(user!.id, skillId),
+    mutationFn: (skillId: string) => upsertUserSkillProgress(user!.id, skillId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["skills", "progress", user?.id] });
     },

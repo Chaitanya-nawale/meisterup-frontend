@@ -88,16 +88,9 @@ function resolveIcon(iconName: string | null): LucideIcon {
 }
 
 /* ── Merge DB skill + user progress into a view-model ── */
-function toViewModel(
-  skill: DBSkill,
-  progress: UserSkillProgress | undefined,
-): SkillViewModel {
+function toViewModel(skill: DBSkill, progress: UserSkillProgress | undefined): SkillViewModel {
   const mastery = progress ? Math.round(progress.mastery_pct) : 0;
-  const status: SkillStatus = progress
-    ? mastery >= 80
-      ? "completed"
-      : "active"
-    : "new";
+  const status: SkillStatus = progress ? (mastery >= 80 ? "completed" : "active") : "new";
 
   const learners =
     skill.learner_count >= 1000
@@ -122,7 +115,6 @@ function toViewModel(
 }
 
 const CATEGORIES = [
-
   "All",
   "Languages",
   "Frameworks",
@@ -366,9 +358,7 @@ function SkillsPage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [activeFilter, setActiveFilter] = useState<
-    "all" | "active" | "new" | "completed"
-  >("all");
+  const [activeFilter, setActiveFilter] = useState<"all" | "active" | "new" | "completed">("all");
 
   // Real data hooks
   const { data: rawSkills, isLoading: skillsLoading } = usePublishedSkills();

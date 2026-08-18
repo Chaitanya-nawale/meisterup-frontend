@@ -94,7 +94,7 @@ function DashboardNav() {
           {streakFreezes > 0 && (
             <div
               className="hidden sm:flex items-center gap-1.5 rounded-lg border border-sky-500/20 bg-sky-500/10 px-2.5 py-1.5 text-[13px] font-medium text-sky-400"
-              title={`${streakFreezes} streak freeze${streakFreezes !== 1 ? 's' : ''} available`}
+              title={`${streakFreezes} streak freeze${streakFreezes !== 1 ? "s" : ""} available`}
             >
               <Snowflake className="h-4 w-4" />
               <span>{streakFreezes}</span>

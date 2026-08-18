@@ -1120,9 +1120,11 @@ function SkillPracticePage() {
 
     // Best-effort: use skillId as the skill identifier.
     // The DB lookup will fail gracefully if skill not seeded yet.
-    startGymSession(user.id, skillId).then((session) => {
-      activeSessionRef.current = session;
-    }).catch(console.error);
+    startGymSession(user.id, skillId)
+      .then((session) => {
+        activeSessionRef.current = session;
+      })
+      .catch(console.error);
 
     return () => {
       if (activeSessionRef.current) {
@@ -1130,7 +1132,7 @@ function SkillPracticePage() {
         activeSessionRef.current = null;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, skillId]);
 
   // Swiping State

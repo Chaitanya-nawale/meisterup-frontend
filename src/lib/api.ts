@@ -52,9 +52,7 @@ export async function fetchSkillBySlug(slug: string): Promise<Skill | null> {
   return data as Skill | null;
 }
 
-export async function fetchUserSkillProgress(
-  userId: string,
-): Promise<UserSkillProgress[]> {
+export async function fetchUserSkillProgress(userId: string): Promise<UserSkillProgress[]> {
   const { data, error } = await supabase
     .from("user_skill_progress")
     .select("*")
@@ -65,10 +63,7 @@ export async function fetchUserSkillProgress(
   return (data as UserSkillProgress[]) ?? [];
 }
 
-export async function upsertUserSkillProgress(
-  userId: string,
-  skillId: string,
-): Promise<void> {
+export async function upsertUserSkillProgress(userId: string, skillId: string): Promise<void> {
   const { error } = await supabase.from("user_skill_progress").upsert(
     {
       user_id: userId,
@@ -116,9 +111,7 @@ export async function fetchCardsBySkillId(skillId: string): Promise<Card[]> {
 
   const { data, error } = await supabase
     .from("cards")
-    .select(
-      `*, concept:concepts(name, slug, topic_group)`,
-    )
+    .select(`*, concept:concepts(name, slug, topic_group)`)
     .in("concept_id", conceptIds)
     .eq("is_published", true)
     .order("difficulty", { ascending: true });
@@ -229,16 +222,10 @@ export async function addXPEntry(entry: {
 }
 
 export async function fetchTotalXP(userId: string): Promise<number> {
-  const { data, error } = await supabase
-    .from("xp_ledger")
-    .select("amount")
-    .eq("user_id", userId);
+  const { data, error } = await supabase.from("xp_ledger").select("amount").eq("user_id", userId);
 
   if (error) throw new Error(error.message);
-  return (data ?? []).reduce(
-    (sum: number, row: { amount: number }) => sum + (row.amount ?? 0),
-    0,
-  );
+  return (data ?? []).reduce((sum: number, row: { amount: number }) => sum + (row.amount ?? 0), 0);
 }
 
 export async function fetchWeeklyXP(userId: string): Promise<number> {
@@ -253,10 +240,7 @@ export async function fetchWeeklyXP(userId: string): Promise<number> {
     .gte("created_at", weekStart.toISOString());
 
   if (error) throw new Error(error.message);
-  return (data ?? []).reduce(
-    (sum: number, row: { amount: number }) => sum + (row.amount ?? 0),
-    0,
-  );
+  return (data ?? []).reduce((sum: number, row: { amount: number }) => sum + (row.amount ?? 0), 0);
 }
 
 /* ────────────────────────────────────────────────────────────── */
@@ -276,7 +260,18 @@ export async function fetchUserProfile(userId: string): Promise<Profile | null> 
 
 export async function updateUserProfile(
   userId: string,
-  updates: Partial<Pick<Profile, "display_name" | "bio" | "role" | "experience_band" | "profile_public" | "leaderboard_opt_in" | "onboarding_completed_at">>,
+  updates: Partial<
+    Pick<
+      Profile,
+      | "display_name"
+      | "bio"
+      | "role"
+      | "experience_band"
+      | "profile_public"
+      | "leaderboard_opt_in"
+      | "onboarding_completed_at"
+    >
+  >,
 ): Promise<void> {
   const { error } = await supabase
     .from("profiles")
@@ -302,10 +297,12 @@ export async function upsertNotificationPrefs(
   userId: string,
   prefs: Partial<Omit<UserNotificationPrefs, "user_id" | "created_at" | "updated_at">>,
 ): Promise<void> {
-  const { error } = await supabase.from("user_notification_prefs").upsert(
-    { user_id: userId, ...prefs, updated_at: new Date().toISOString() },
-    { onConflict: "user_id" },
-  );
+  const { error } = await supabase
+    .from("user_notification_prefs")
+    .upsert(
+      { user_id: userId, ...prefs, updated_at: new Date().toISOString() },
+      { onConflict: "user_id" },
+    );
   if (error) throw new Error(error.message);
 }
 
@@ -368,8 +365,7 @@ export async function updateStreakAfterSession(userId: string): Promise<void> {
   ) {
     // Check if within freeze window (1 day gap)
     const daysBetween = Math.floor(
-      (new Date(today).getTime() - new Date(lastDate ?? today).getTime()) /
-        (1000 * 60 * 60 * 24),
+      (new Date(today).getTime() - new Date(lastDate ?? today).getTime()) / (1000 * 60 * 60 * 24),
     );
     if (daysBetween === 2) {
       // Freeze covers the gap
@@ -419,9 +415,7 @@ export async function fetchUserBadges(userId: string): Promise<UserBadge[]> {
 /*  DAILY GOALS                                                    */
 /* ────────────────────────────────────────────────────────────── */
 
-export async function fetchUserDailyGoals(
-  userId: string,
-): Promise<UserDailyGoals | null> {
+export async function fetchUserDailyGoals(userId: string): Promise<UserDailyGoals | null> {
   const { data, error } = await supabase
     .from("user_daily_goals")
     .select("*")
@@ -437,10 +431,7 @@ export async function fetchUserDailyGoals(
 /* ────────────────────────────────────────────────────────────── */
 
 export async function fetchLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
-  const { data, error } = await supabase
-    .from("weekly_leaderboard")
-    .select("*")
-    .limit(limit);
+  const { data, error } = await supabase.from("weekly_leaderboard").select("*").limit(limit);
 
   if (error) throw new Error(error.message);
   return (data as LeaderboardEntry[]) ?? [];
@@ -450,9 +441,7 @@ export async function fetchLeaderboard(limit = 50): Promise<LeaderboardEntry[]> 
 /*  DASHBOARD                                                      */
 /* ────────────────────────────────────────────────────────────── */
 
-export async function fetchDashboardStats(
-  userId: string,
-): Promise<DashboardStats> {
+export async function fetchDashboardStats(userId: string): Promise<DashboardStats> {
   const [streak, totalXP, weeklyXP, skillProgress] = await Promise.all([
     fetchUserStreak(userId),
     fetchTotalXP(userId),
@@ -467,10 +456,7 @@ export async function fetchDashboardStats(
       ? activeProg.reduce((sum, p) => sum + p.mastery_pct, 0) / activeProg.length
       : 0;
 
-  const totalConceptsMastered = skillProgress.reduce(
-    (sum, p) => sum + p.concepts_mastered,
-    0,
-  );
+  const totalConceptsMastered = skillProgress.reduce((sum, p) => sum + p.concepts_mastered, 0);
 
   return {
     streak: streak?.current_streak ?? 0,
@@ -491,9 +477,7 @@ export async function fetchContinueLearning(
   // Get user's active skill progress, ordered by last practiced
   const { data: progress, error: progressError } = await supabase
     .from("user_skill_progress")
-    .select(
-      `*, skill:skills(id, name, slug, color_from, color_to, total_concepts)`,
-    )
+    .select(`*, skill:skills(id, name, slug, color_from, color_to, total_concepts)`)
     .eq("user_id", userId)
     .eq("status", "active")
     .order("last_practiced", { ascending: false })
@@ -573,7 +557,12 @@ export async function upsertConceptMastery(
     .eq("concept_id", conceptId)
     .maybeSingle();
 
-  const prev = existing ?? { mastery_probability: 0, times_seen: 0, times_correct: 0, state: "unseen" };
+  const prev = existing ?? {
+    mastery_probability: 0,
+    times_seen: 0,
+    times_correct: 0,
+    state: "unseen",
+  };
   const timesCorrect = (prev.times_correct ?? 0) + (isCorrect ? 1 : 0);
   const timesSeen = (prev.times_seen ?? 0) + 1;
 
@@ -581,8 +570,7 @@ export async function upsertConceptMastery(
   const delta = isCorrect ? 0.08 : -0.05;
   const newMastery = Math.max(0, Math.min(1, (prev.mastery_probability ?? 0) + delta));
 
-  const newState =
-    newMastery >= 0.8 ? "mastered" : timesSeen > 0 ? "learning" : "unseen";
+  const newState = newMastery >= 0.8 ? "mastered" : timesSeen > 0 ? "learning" : "unseen";
 
   // Next review (simple interval doubling)
   const reviewIntervalDays = newMastery >= 0.8 ? 7 : 1;
@@ -631,31 +619,26 @@ export async function updateSkillMasteryFromConcepts(
     .in("concept_id", conceptIds);
 
   const masteredCount = mastered?.length ?? 0;
-  const masteryPct =
-    concepts.length > 0 ? (masteredCount / concepts.length) * 100 : 0;
+  const masteryPct = concepts.length > 0 ? (masteredCount / concepts.length) * 100 : 0;
 
-  await supabase
-    .from("user_skill_progress")
-    .upsert(
-      {
-        user_id: userId,
-        skill_id: skillId,
-        mastery_pct: Math.round(masteryPct * 100) / 100,
-        concepts_mastered: masteredCount,
-        last_practiced: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id,skill_id" },
-    );
+  await supabase.from("user_skill_progress").upsert(
+    {
+      user_id: userId,
+      skill_id: skillId,
+      mastery_pct: Math.round(masteryPct * 100) / 100,
+      concepts_mastered: masteredCount,
+      last_practiced: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id,skill_id" },
+  );
 }
 
 /* ────────────────────────────────────────────────────────────── */
 /*  SKILL ENROLLMENTS (Migration 006)                              */
 /* ────────────────────────────────────────────────────────────── */
 
-export async function fetchUserEnrollments(
-  userId: string,
-): Promise<UserSkillEnrollment[]> {
+export async function fetchUserEnrollments(userId: string): Promise<UserSkillEnrollment[]> {
   const { data, error } = await supabase
     .from("user_skill_enrollments")
     .select("*")
@@ -670,10 +653,7 @@ export async function fetchUserEnrollments(
   return (data as UserSkillEnrollment[]) ?? [];
 }
 
-export async function enrollInSkill(
-  userId: string,
-  skillId: string,
-): Promise<void> {
+export async function enrollInSkill(userId: string, skillId: string): Promise<void> {
   const { error } = await supabase
     .from("user_skill_enrollments")
     .upsert(

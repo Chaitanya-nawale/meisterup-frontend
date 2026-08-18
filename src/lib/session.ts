@@ -96,9 +96,7 @@ export async function recordAnswer(
   }
 
   // Update concept mastery
-  upsertConceptMastery(active.userId, opts.conceptId, opts.isCorrect).catch(
-    console.error,
-  );
+  upsertConceptMastery(active.userId, opts.conceptId, opts.isCorrect).catch(console.error);
 
   // Update local counters
   active.cardsAnswered++;

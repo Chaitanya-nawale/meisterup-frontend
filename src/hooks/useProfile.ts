@@ -33,7 +33,15 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (
       updates: Partial<
-        Pick<Profile, "display_name" | "bio" | "role" | "experience_band" | "profile_public" | "leaderboard_opt_in">
+        Pick<
+          Profile,
+          | "display_name"
+          | "bio"
+          | "role"
+          | "experience_band"
+          | "profile_public"
+          | "leaderboard_opt_in"
+        >
       >,
     ) => updateUserProfile(user!.id, updates),
     onSuccess: () => {
@@ -59,9 +67,7 @@ export function useUpdateNotificationPrefs() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (
-      prefs: Partial<
-        Omit<UserNotificationPrefs, "user_id" | "created_at" | "updated_at">
-      >,
+      prefs: Partial<Omit<UserNotificationPrefs, "user_id" | "created_at" | "updated_at">>,
     ) => upsertNotificationPrefs(user!.id, prefs),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["notification-prefs", user?.id] });
