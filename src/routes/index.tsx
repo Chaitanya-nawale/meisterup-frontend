@@ -104,7 +104,12 @@ function Nav() {
       )}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
-        <a href="#top" className="group flex items-center">
+        <a href="#top" className="group flex items-center gap-2.5">
+          <img
+            src="/favicon.png"
+            alt="MeisterUp logo"
+            className="h-8 w-8 object-contain"
+          />
           <span
             className="font-serif text-[28px] font-semibold tracking-[0.04em] leading-none"
             style={{ color: "hsl(0 65% 22%)" }}
@@ -850,7 +855,12 @@ function Footer() {
   return (
     <footer className="border-t border-border/20 bg-background py-8 text-[13px] text-muted-foreground">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <img
+            src="/favicon.png"
+            alt="MeisterUp logo"
+            className="h-5 w-5 object-contain opacity-90"
+          />
           <span className="text-[12px] text-muted-foreground/70">
             © {new Date().getFullYear()} MeisterUp, Inc.
           </span>
