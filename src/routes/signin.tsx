@@ -6,9 +6,8 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 
 export const Route = createFileRoute("/signin")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    mode: (search.mode as string) || "signin",
-  }),
+  validateSearch: (search: Record<string, unknown>): { mode?: string } =>
+    search.mode ? { mode: String(search.mode) } : {},
   head: () => ({
     meta: [
       { title: "Sign In — MeisterUp" },
