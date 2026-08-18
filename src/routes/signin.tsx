@@ -6,9 +6,8 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 
 export const Route = createFileRoute("/signin")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    mode: (search.mode as string) || "signin",
-  }),
+  validateSearch: (search: Record<string, unknown>): { mode?: string } =>
+    search.mode ? { mode: String(search.mode) } : {},
   head: () => ({
     meta: [
       { title: "Sign In — MeisterUp" },
@@ -77,7 +76,7 @@ function Nav({
     <header className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/[0.06]">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         <Link to="/" className="group flex items-center gap-2">
-          <img src="/favicon.ico" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
+          <img src="/favicon.png" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
           <span className="text-[15px] font-semibold tracking-tight text-white">MeisterUp</span>
           <span className="ml-1 rounded-full border border-white/10 bg-white/5 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-widest text-white/50">
             Beta
