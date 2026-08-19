@@ -4,6 +4,7 @@ import { annotate } from "rough-notation";
 import { useAuth } from "../lib/auth";
 import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
 import {
+  MoveRight,
   ArrowRight,
   ArrowUpRight,
   Check,
@@ -88,12 +89,45 @@ function GlowOrb({ className }: { className?: string }) {
 function Nav() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [showCTA, setShowCTA] = useState(false);
+
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 8);
-    on();
-    window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const heroCta = document.getElementById("hero-cta");
+    let observer: IntersectionObserver;
+
+    if (heroCta) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+            setShowCTA(true);
+          } else {
+            setShowCTA(false);
+          }
+        },
+        { threshold: 0 },
+      );
+      observer.observe(heroCta);
+    } else {
+      const fallbackCTA = () => setShowCTA(window.scrollY > window.innerHeight * 0.5);
+      window.addEventListener("scroll", fallbackCTA, { passive: true });
+      return () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("scroll", fallbackCTA);
+      };
+    }
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (observer) observer.disconnect();
+    };
   }, []);
+
   return (
     <header
       className={cn(
@@ -105,13 +139,8 @@ function Nav() {
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
         <a href="#top" className="group flex items-center gap-2.5">
-          <img
-            src="/favicon.png"
-            alt="MeisterUp logo"
-            className="h-8 w-8 object-contain"
-          />
           <span
-            className="font-serif text-[28px] font-semibold tracking-[0.04em] leading-none"
+            className="font-serif text-3xl md:text-4xl lg:text-[40px] font-semibold tracking-[0.04em] leading-none"
             style={{ color: "hsl(0 65% 22%)" }}
           >
             Meister
@@ -125,7 +154,7 @@ function Nav() {
           {user ? (
             <Link
               to="/dashboard"
-              className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[15px] font-semibold text-primary-foreground transition-all hover:bg-primary/90"
+              className="group inline-flex items-center gap-2 md:gap-2 rounded-full bg-primary px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90"
             >
               Go to Dashboard
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -134,19 +163,44 @@ function Nav() {
             <>
               <Link
                 to="/signin"
-                search={{ mode: "signup" }}
-                className="hidden text-[15px] font-medium text-muted-foreground hover:text-foreground sm:block"
-              >
-                Sign Up
-              </Link>
-              <Link
-                to="/signin"
                 search={{ mode: "signin" }}
-                className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[15px] font-semibold text-primary-foreground transition-all hover:bg-primary/90"
+                className="group inline-flex items-center rounded-full border border-foreground/30 bg-white px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base font-medium text-foreground transition-all hover:border-foreground/50 hover:bg-foreground/5 mr-2 sm:mr-4 shadow-sm"
               >
-                Log In
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                Login
+                <AnimatePresence>
+                  {!showCTA && (
+                    <motion.div
+                      initial={{ opacity: 0, width: 0, overflow: "hidden" }}
+                      animate={{ opacity: 1, width: "auto", overflow: "visible" }}
+                      exit={{ opacity: 0, width: 0, overflow: "hidden" }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="flex items-center"
+                    >
+                      <MoveRight className="ml-1.5 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-70 transition-transform group-hover:translate-x-0.5" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Link>
+              <AnimatePresence>
+                {showCTA && (
+                  <motion.div
+                    initial={{ opacity: 0, width: 0, overflow: "hidden" }}
+                    animate={{ opacity: 1, width: "auto", overflow: "visible" }}
+                    exit={{ opacity: 0, width: 0, overflow: "hidden" }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="whitespace-nowrap"
+                  >
+                    <Link
+                      to="/signin"
+                      search={{ mode: "signup" }}
+                      className="group inline-flex items-center gap-2 md:gap-2 rounded-full bg-primary px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90"
+                    >
+                      Sign Up
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </>
           )}
         </div>
@@ -205,9 +259,7 @@ function Hero() {
           <h1 className="mt-10 font-sans text-5xl font-semibold leading-[1.15] tracking-[-0.035em] sm:text-6xl md:text-7xl">
             <span>The learning platform that teaches</span>
             <br />
-            <span ref={textRef}>
-              exactly what you need
-            </span>
+            <span ref={textRef}>exactly what you need</span>
             <span> to know.</span>
           </h1>
 
@@ -215,7 +267,7 @@ function Hero() {
             Master skills faster. We skip what you know and teach only the missing pieces.
           </p>
 
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-5">
+          <div id="hero-cta" className="mt-12 flex flex-wrap items-center justify-center gap-5">
             <a
               href="#demo"
               className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-primary-foreground transition hover:bg-primary/90"
@@ -234,7 +286,11 @@ function Hero() {
         </motion.div>
       </div>
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-40 transition-opacity hover:opacity-100">
-        <a href="#how" aria-label="Scroll down" className="text-muted-foreground flex flex-col items-center">
+        <a
+          href="#how"
+          aria-label="Scroll down"
+          className="text-muted-foreground flex flex-col items-center"
+        >
           <ChevronDown className="h-6 w-6" />
         </a>
       </div>
@@ -265,7 +321,10 @@ function HowItWorks() {
     },
   ];
   return (
-    <section id="how" className="relative flex min-h-[85dvh] flex-col justify-center border-b border-border/20 py-24">
+    <section
+      id="how"
+      className="relative flex min-h-[85dvh] flex-col justify-center border-b border-border/20 py-24"
+    >
       <div className="mx-auto max-w-5xl px-6">
         <div className="mx-auto max-w-xl text-center">
           <Eyebrow>How it works</Eyebrow>
@@ -392,7 +451,10 @@ function SwipeDemo() {
   }
 
   return (
-    <section id="demo" className="relative flex min-h-[85dvh] flex-col justify-center border-b border-border/20 py-28">
+    <section
+      id="demo"
+      className="relative flex min-h-[85dvh] flex-col justify-center border-b border-border/20 py-28"
+    >
       <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2 lg:items-center">
         <div>
           <Eyebrow>Try one activity</Eyebrow>
@@ -650,7 +712,10 @@ const SKILL_TAGS = [
 
 function SkillStrip() {
   return (
-    <section id="skills" className="relative flex min-h-[85dvh] flex-col justify-center border-b border-border/20 py-20">
+    <section
+      id="skills"
+      className="relative flex min-h-[85dvh] flex-col justify-center border-b border-border/20 py-20"
+    >
       <div className="mx-auto max-w-5xl px-6">
         <div className="flex flex-col items-center text-center">
           <Eyebrow>Skill library</Eyebrow>
@@ -798,7 +863,7 @@ function CTA() {
 
   useEffect(() => {
     if (!highlightRef.current) return;
-    
+
     let annotation: ReturnType<typeof annotate>;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -809,13 +874,13 @@ function CTA() {
             animationDuration: 1000,
             multiline: true,
           });
-          setTimeout(() => annotation?.show(), 2000); // Wait 1 second so they read the top lines first
+          setTimeout(() => annotation?.show(), 1500); // Wait 1 second so they read the top lines first
           observer.disconnect();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     );
-    
+
     observer.observe(highlightRef.current);
     return () => {
       observer.disconnect();
@@ -834,7 +899,9 @@ function CTA() {
           </span>
         </h2>
         <p className="mx-auto mt-10 text-[24px] font-medium tracking-tight text-foreground sm:text-[32px]">
-          <span ref={highlightRef} className="px-2">Because it is.</span>
+          <span ref={highlightRef} className="px-2">
+            Because it is.
+          </span>
         </p>
         <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
           <Link
@@ -856,11 +923,6 @@ function Footer() {
     <footer className="border-t border-border/20 bg-background py-8 text-[13px] text-muted-foreground">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
         <div className="flex items-center gap-2.5">
-          <img
-            src="/favicon.png"
-            alt="MeisterUp logo"
-            className="h-5 w-5 object-contain opacity-90"
-          />
           <span className="text-[12px] text-muted-foreground/70">
             © {new Date().getFullYear()} MeisterUp, Inc.
           </span>
