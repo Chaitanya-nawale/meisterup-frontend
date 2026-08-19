@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../lib/auth";
 import { ArrowRight, Loader2, Code2, Brain, Sparkles, Layers } from "lucide-react";
-import { updateUserProfile } from "../lib/api";
-import { supabase } from "../lib/supabase";
+import { updateUserProfile, seedInitialStreak } from "../lib/api";
 import { toast } from "sonner";
 import type { UserRole, ExperienceBand } from "../lib/types";
 
@@ -61,12 +60,7 @@ function OnboardingPage() {
         onboarding_completed_at: new Date().toISOString(),
       });
       // 2. Seed initial streak row
-      await supabase
-        .from("user_streaks")
-        .upsert(
-          { user_id: user.id, current_streak: 0, longest_streak: 0 },
-          { onConflict: "user_id", ignoreDuplicates: true },
-        );
+      await seedInitialStreak(user.id);
       navigate({ to: "/dashboard" });
     } catch (err) {
       console.error("Onboarding save failed:", err);

@@ -2,8 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Eye, EyeOff, Github, Loader2, Sparkles } from "lucide-react";
-import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
+import { authClient } from "../auth";
 
 export const Route = createFileRoute("/signin")({
   validateSearch: (search: Record<string, unknown>): { mode?: string } =>
@@ -31,6 +31,14 @@ function cn(...c: (string | false | undefined | null)[]) {
   return c.filter(Boolean).join(" ");
 }
 
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-border/40 bg-card/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground backdrop-blur">
+      {children}
+    </div>
+  );
+}
+
 /* ─────────────────────────────── background ──────────────────────────────── */
 
 function GridBg() {
@@ -40,19 +48,10 @@ function GridBg() {
       className="pointer-events-none absolute inset-0 opacity-[0.35]"
       style={{
         backgroundImage:
-          "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+          "linear-gradient(to right, rgba(191,160,128,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(191,160,128,0.06) 1px, transparent 1px)",
         backgroundSize: "56px 56px",
         maskImage: "radial-gradient(ellipse 80% 60% at 50% 30%, black 40%, transparent 100%)",
       }}
-    />
-  );
-}
-
-function GlowOrb({ className }: { className?: string }) {
-  return (
-    <div
-      aria-hidden
-      className={cn("pointer-events-none absolute rounded-full blur-[120px] opacity-40", className)}
     />
   );
 }
@@ -73,17 +72,21 @@ function Nav({
   setErrors: (v: { email?: string; password?: string }) => void;
 }) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/[0.06]">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="group flex items-center gap-2">
-          <img src="/favicon.png" alt="MeisterUp Logo" className="h-6 w-6 object-contain" />
-          <span className="text-[15px] font-semibold tracking-tight text-white">MeisterUp</span>
-          <span className="ml-1 rounded-full border border-white/10 bg-white/5 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-widest text-white/50">
-            Beta
+    <header className="fixed inset-x-0 top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-[var(--nav-border)]">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
+        <Link to="/" className="group flex items-center gap-2.5">
+          <span
+            className="font-serif text-3xl md:text-4xl lg:text-[40px] font-semibold tracking-[0.04em] leading-none"
+            style={{ color: "hsl(0 65% 22%)" }}
+          >
+            Meister
+            <span className="italic font-normal" style={{ color: "hsl(0 60% 38%)" }}>
+              Up
+            </span>
           </span>
         </Link>
 
-        <p className="text-[13px] text-white/50">
+        <p className="text-[14px] text-muted-foreground font-medium">
           {isSignUp ? "Already have an account? " : "Don't have an account? "}
           <button
             onClick={() => {
@@ -92,7 +95,7 @@ function Nav({
               setSignUpSuccess(false);
               setErrors({});
             }}
-            className="font-medium text-white hover:text-white/80 transition-colors bg-transparent border-none cursor-pointer underline"
+            className="font-medium text-foreground hover:text-foreground/80 transition-colors bg-transparent border-none cursor-pointer underline"
           >
             {isSignUp ? "Sign in" : "Start free"}
           </button>
@@ -124,8 +127,8 @@ function Field({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-[13px] font-medium text-white/70">
+    <div className="space-y-1.5 text-left">
+      <label htmlFor={id} className="block text-[13px] font-medium text-foreground/80">
         {label}
       </label>
       <div className="relative">
@@ -137,10 +140,12 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           autoComplete={id}
           className={cn(
-            "w-full rounded-xl border bg-white/[0.04] px-4 py-2.5 text-[14px] text-white placeholder:text-white/30",
+            "w-full rounded-xl border bg-card/50 px-4 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/50",
             "outline-none transition-all duration-200",
-            "focus:bg-white/[0.06] focus:border-white/30 focus:ring-2 focus:ring-indigo-500/25",
-            error ? "border-red-500/50" : "border-white/10",
+            "focus:bg-card focus:border-border focus:ring-2 focus:ring-primary/20",
+            error
+              ? "border-destructive/50 focus:ring-destructive/20 focus:border-destructive"
+              : "border-border/40",
           )}
         />
         {children}
@@ -152,7 +157,7 @@ function Field({
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            className="text-[12px] text-red-400"
+            className="text-[12px] text-destructive"
           >
             {error}
           </motion.p>
@@ -167,9 +172,9 @@ function Field({
 function Divider() {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-px flex-1 bg-white/10" />
-      <span className="text-[12px] text-white/30">or continue with</span>
-      <div className="h-px flex-1 bg-white/10" />
+      <div className="h-px flex-1 bg-border/40" />
+      <span className="text-[12px] text-muted-foreground">or continue with</span>
+      <div className="h-px flex-1 bg-border/40" />
     </div>
   );
 }
@@ -223,16 +228,18 @@ function SignInPage() {
 
     try {
       if (isSignUp) {
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await authClient.signUp.email({
           email,
           password,
+          name: email.split("@")[0], // Better Auth requires a name
         });
         if (error) throw error;
-        if (data.user && !data.session) {
+        // Neon Auth signs in automatically after sign-up unless email verification is required
+        if (data && !error) {
           setSignUpSuccess(true);
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await authClient.signIn.email({
           email,
           password,
         });
@@ -250,11 +257,9 @@ function SignInPage() {
   async function handleOAuth(provider: "github" | "google") {
     setAuthError(null);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await authClient.signIn.social({
         provider,
-        options: {
-          redirectTo: window.location.origin + "/dashboard",
-        },
+        callbackURL: window.location.origin + "/dashboard",
       });
       if (error) throw error;
     } catch (err: unknown) {
@@ -265,12 +270,9 @@ function SignInPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black font-sans">
+    <div className="relative min-h-screen overflow-hidden bg-background font-sans">
       {/* Background */}
       <GridBg />
-      <GlowOrb className="left-1/2 top-0 h-[480px] w-[480px] -translate-x-1/2 bg-indigo-500" />
-      <GlowOrb className="right-0 top-40 h-[320px] w-[320px] bg-fuchsia-500/40" />
-      <GlowOrb className="left-0 top-60 h-[320px] w-[320px] bg-cyan-500/30" />
 
       <Nav
         isSignUp={isSignUp}
@@ -291,17 +293,17 @@ function SignInPage() {
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col items-center gap-5 text-center max-w-[400px]"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/10">
-                <Sparkles className="h-7 w-7 text-emerald-400" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
+                <Sparkles className="h-7 w-7 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold tracking-tight text-white">
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                   Confirm your email
                 </h1>
-                <p className="mt-1.5 text-[14px] text-white/50 leading-relaxed">
+                <p className="mt-1.5 text-[14px] text-muted-foreground leading-relaxed">
                   We've sent a verification link to{" "}
-                  <span className="text-white font-medium">{email}</span>. Please check your inbox
-                  (and spam folder) to activate your account.
+                  <span className="text-foreground font-medium">{email}</span>. Please check your
+                  inbox (and spam folder) to activate your account.
                 </p>
               </div>
               <button
@@ -311,7 +313,7 @@ function SignInPage() {
                   setEmail("");
                   setPassword("");
                 }}
-                className="mt-2 text-[13px] font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="mt-2 text-[13px] font-medium text-primary hover:text-primary/80 transition-colors cursor-pointer"
               >
                 Back to sign in
               </button>
@@ -325,21 +327,23 @@ function SignInPage() {
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col items-center gap-5 text-center"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/10">
-                <Sparkles className="h-7 w-7 text-emerald-400" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
+                <Sparkles className="h-7 w-7 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold tracking-tight text-white">You're in.</h1>
-                <p className="mt-1.5 text-[14px] text-white/50">
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                  You're in.
+                </h1>
+                <p className="mt-1.5 text-[14px] text-muted-foreground">
                   Welcome back — redirecting to your dashboard…
                 </p>
               </div>
-              <div className="h-0.5 w-32 overflow-hidden rounded-full bg-white/10">
+              <div className="h-0.5 w-32 overflow-hidden rounded-full bg-border">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 1.4, ease: "linear" }}
-                  className="h-full rounded-full bg-indigo-400"
+                  className="h-full rounded-full bg-primary"
                 />
               </div>
             </motion.div>
@@ -353,15 +357,15 @@ function SignInPage() {
               className="w-full max-w-[400px]"
             >
               {/* eyebrow */}
-              <div className="mb-7 flex flex-col items-center gap-3 text-center">
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/60 backdrop-blur">
+              <div className="mb-7 flex flex-col items-center gap-4 text-center">
+                <Eyebrow>
                   <Sparkles className="h-3 w-3" />
                   <span>{isSignUp ? "Get started" : "Welcome back"}</span>
-                </div>
-                <h1 className="text-[28px] font-semibold tracking-[-0.03em] text-white">
+                </Eyebrow>
+                <h1 className="font-sans text-3xl font-semibold tracking-[-0.03em] text-foreground sm:text-4xl">
                   {isSignUp ? "Create your account" : "Sign in to MeisterUp"}
                 </h1>
-                <p className="text-[14px] text-white/50">
+                <p className="text-[14.5px] text-muted-foreground">
                   {isSignUp
                     ? "Join our adaptive learning journey today."
                     : "Continue your adaptive learning journey."}
@@ -369,16 +373,16 @@ function SignInPage() {
               </div>
 
               {/* glass card */}
-              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-7 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+              <div className="relative overflow-hidden rounded-2xl border border-border/30 bg-card/40 p-7 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] backdrop-blur-xl">
                 {/* subtle inner glow */}
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent"
                 />
 
                 <form onSubmit={handleSubmit} noValidate className="space-y-4">
                   {authError && (
-                    <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-[13px] text-red-400">
+                    <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-[13px] text-destructive">
                       {authError}
                     </div>
                   )}
@@ -413,7 +417,7 @@ function SignInPage() {
                       id="toggle-password"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                       onClick={() => setShowPassword((p) => !p)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground/80 transition-colors cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -423,18 +427,18 @@ function SignInPage() {
                     <div className="flex items-center justify-between">
                       <label
                         htmlFor="remember"
-                        className="flex cursor-pointer items-center gap-2 text-[13px] text-white/50"
+                        className="flex cursor-pointer items-center gap-2 text-[13px] text-muted-foreground"
                       >
                         <input
                           id="remember"
                           type="checkbox"
-                          className="h-3.5 w-3.5 cursor-pointer accent-indigo-500"
+                          className="h-3.5 w-3.5 cursor-pointer accent-primary"
                         />
                         Remember me
                       </label>
                       <a
                         href="#forgot"
-                        className="text-[13px] text-white/50 hover:text-white transition-colors"
+                        className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
                       >
                         Forgot password?
                       </a>
@@ -449,10 +453,10 @@ function SignInPage() {
                     whileTap={{ scale: loading ? 1 : 0.985 }}
                     className={cn(
                       "group mt-2 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5",
-                      "text-[14px] font-semibold text-black transition-all duration-200",
+                      "text-[14px] font-semibold text-primary-foreground transition-all duration-200",
                       loading
-                        ? "bg-white/70 cursor-not-allowed"
-                        : "bg-white hover:bg-white/90 cursor-pointer",
+                        ? "bg-primary/70 cursor-not-allowed"
+                        : "bg-primary hover:bg-primary/90 cursor-pointer",
                     )}
                   >
                     {loading ? (
@@ -479,7 +483,7 @@ function SignInPage() {
                     id="signin-github"
                     type="button"
                     onClick={() => handleOAuth("github")}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-[13px] font-medium text-white/70 transition-all hover:bg-white/[0.07] hover:text-white cursor-pointer"
+                    className="flex items-center justify-center gap-2 rounded-xl border border-border/40 bg-card/40 px-4 py-2.5 text-[13px] font-medium text-foreground/80 transition-all hover:bg-card/60 hover:text-foreground cursor-pointer"
                   >
                     <Github className="h-4 w-4" />
                     GitHub
@@ -489,7 +493,7 @@ function SignInPage() {
                     id="signin-google"
                     type="button"
                     onClick={() => handleOAuth("google")}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-[13px] font-medium text-white/70 transition-all hover:bg-white/[0.07] hover:text-white cursor-pointer"
+                    className="flex items-center justify-center gap-2 rounded-xl border border-border/40 bg-card/40 px-4 py-2.5 text-[13px] font-medium text-foreground/80 transition-all hover:bg-card/60 hover:text-foreground cursor-pointer"
                   >
                     {/* Inline Google "G" mark */}
                     <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
@@ -501,13 +505,19 @@ function SignInPage() {
               </div>
 
               {/* Footer note */}
-              <p className="mt-5 text-center text-[12px] text-white/30">
+              <p className="mt-5 text-center text-[12px] text-muted-foreground/60">
                 By signing in, you agree to our{" "}
-                <a href="#terms" className="underline hover:text-white/60 transition-colors">
+                <a
+                  href="#terms"
+                  className="underline hover:text-muted-foreground transition-colors"
+                >
                   Terms
                 </a>{" "}
                 and{" "}
-                <a href="#privacy" className="underline hover:text-white/60 transition-colors">
+                <a
+                  href="#privacy"
+                  className="underline hover:text-muted-foreground transition-colors"
+                >
                   Privacy Policy
                 </a>
                 .

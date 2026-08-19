@@ -129,7 +129,7 @@ export async function finishSession(active: ActiveSession): Promise<void> {
       cardsSeen: active.cardsAnswered,
       cardsCorrect: active.cardsCorrect,
       xpEarned: active.xpEarned,
-      conceptsPracticed: [...active.conceptsTouched],
+      conceptsPracticed: active.conceptsTouched.size,
       durationSeconds,
     }),
     updateStreakAfterSession(active.userId),

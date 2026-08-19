@@ -1,0 +1,12 @@
+import { createAuthClient } from "@neondatabase/neon-js/auth";
+import { BetterAuthReactAdapter } from "@neondatabase/neon-js/auth/react/adapters";
+
+export const authClient = createAuthClient(
+  (import.meta.env.VITE_NEON_AUTH_URL as string) ||
+    "https://placeholder-project.neonauth.us-east-2.aws.neon.build/neondb/auth",
+  {
+    adapter: BetterAuthReactAdapter({
+      fetchOptions: { credentials: "include" },
+    }),
+  },
+);

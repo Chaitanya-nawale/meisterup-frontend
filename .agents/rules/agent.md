@@ -229,3 +229,4 @@ bun run format       # Run Prettier
 - ❌ Introducing a light mode — the design is dark mode only
 - ❌ Using icon libraries other than `lucide-react`
 - ❌ Importing from `src/routes/index.tsx`'s local `cn()` — always import from `src/lib/utils.ts`
+- ❌ Reading or accessing `.env` files — NEVER attempt to read, edit, or access `.env` files or files containing secrets. If a task requires environment variables, ask the user to provide them manually.

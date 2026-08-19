@@ -790,7 +790,7 @@ function Testimonials() {
         <div className="mx-auto max-w-xl text-center">
           <Eyebrow>Testimonials</Eyebrow>
           <h2 className="mt-5 font-sans text-3xl font-semibold tracking-[-0.03em] text-foreground sm:text-4xl">
-            ❤️ Loved by engineers
+            <span className="inline-block -rotate-12 mr-1">❤️</span> Loved by engineers
             <span className="text-muted-foreground/70"> worldwide.</span>
           </h2>
         </div>
@@ -803,7 +803,7 @@ function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="group relative overflow-hidden rounded-2xl border border-border/30 bg-gradient-to-b from-card/60 to-card/20 p-8 transition hover:border-border/50"
+              className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/30 bg-gradient-to-b from-card/60 to-card/20 p-8 transition hover:border-border/50"
             >
               {/* Decorative quote mark */}
               <div
@@ -827,7 +827,7 @@ function Testimonials() {
                 ))}
               </div>
 
-              <blockquote className="relative text-[15px] leading-relaxed text-foreground/80">
+              <blockquote className="relative flex-1 text-[15px] leading-relaxed text-foreground/80">
                 &ldquo;{q.q}&rdquo;
               </blockquote>
 
