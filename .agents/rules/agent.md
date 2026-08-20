@@ -36,7 +36,7 @@ The current codebase is the **Senior Review Gym** — an interactive Code Compre
 | Forms            | [React Hook Form](https://react-hook-form.com) (`^7.71.2`) + [Zod](https://zod.dev) (`^3.24.2`) |
 | Data Fetching    | [TanStack Query](https://tanstack.com/query) (`^5.101.1`)                                       |
 | Charts           | [Recharts](https://recharts.org) (`^2.15.4`)                                                    |
-| Backend / Auth   | [Supabase](https://supabase.com) (`@supabase/supabase-js ^2.48.0`) — PostgreSQL + Auth + RLS    |
+| Backend / Auth   | [Neon](https://neon.tech) + BetterAuth — Serverless PostgreSQL + Auth    |
 | Notifications    | [Sonner](https://sonner.emilkowal.ski) (`^2.0.7`) toast system                                  |
 | Class Utilities  | `clsx ^2.1.1` + `tailwind-merge ^3.5.0` → `cn()` helper                                         |
 | Carousel         | `embla-carousel-react ^8.6.0`                                                                   |
@@ -59,11 +59,10 @@ senior-review-gym-main/
 │   │   └── ui/                   # Radix + Tailwind shadcn/ui components
 │   ├── hooks/                    # Custom React hooks
 │   ├── lib/
-│   │   ├── auth.tsx              # Auth provider & hooks (Supabase session)
+│   │   ├── auth.tsx              # Auth provider & hooks (Neon session)
 │   │   ├── error-capture.ts      # Error capture utilities
 │   │   ├── error-page.ts         # Error page helper
 │   │   ├── lovable-error-reporting.ts  # Lovable sandbox error reporting
-│   │   ├── supabase.ts           # Supabase client initialisation
 │   │   └── utils.ts              # cn() helper (clsx + tailwind-merge)
 │   ├── routes/
 │   │   ├── README.md             # Route documentation
@@ -85,7 +84,7 @@ senior-review-gym-main/
 │   ├── server.ts                 # SSR server entry (Nitro/Cloudflare)
 │   ├── start.ts                  # Client-side hydration entry
 │   └── styles.css                # Tailwind v4 source + design tokens
-├── supabase/
+├── db/
 │   └── migrations/               # SQL migration files
 ├── AGENTS.md                     # Lovable git rules (DO NOT DELETE/REWRITE)
 ├── TECH_STACK.md                 # Human-readable tech stack reference
@@ -114,19 +113,19 @@ senior-review-gym-main/
 ### 4.2 Routing — File-Based, Auto-Generated
 
 - `__root.tsx` — root shell with global providers, fonts (Inter + JetBrains Mono), error/404 boundaries
-- `_authenticated.tsx` — auth guard layout; all `_authenticated.*` routes require a live Supabase session
+- `_authenticated.tsx` — auth guard layout; all `_authenticated.*` routes require a live authenticated session
 - `index.tsx` — landing page + the core Swiping Gym component
 - `skills_.$skillId.tsx` — dynamic route for skill detail; param is `$skillId`
 - **Never edit `routeTree.gen.ts`** — it is auto-generated on `bun run dev`
 - To add a new route, create a new file under `src/routes/`; route tree regenerates automatically
 
-### 4.3 Authentication — Supabase
+### 4.3 Authentication & Database
 
-- Supabase client: `src/lib/supabase.ts`
+- Auth client: `src/auth.ts` (using BetterAuth with Neon)
 - Auth provider + hooks: `src/lib/auth.tsx`
 - Session state is consumed via the auth provider wrapped in `__root.tsx`
 - Protected routes sit under the `_authenticated` layout which redirects unauthenticated users
-- Database schema managed via `supabase/migrations/`
+- Database schema managed via `db/migrations/`
 
 ### 4.4 Styling System
 
@@ -217,7 +216,7 @@ bun run format       # Run Prettier
 
 - Auth-gated features → add to `_authenticated.*` routes or a new `_authenticated.<feature>.tsx` file
 - Public features → add to `index.tsx`, `faq.tsx`, `pricing.tsx`, or a new top-level route
-- New Supabase tables → add a migration file in `supabase/migrations/`
+- New tables → add a migration file in `db/migrations/`
 - New reusable UI → add to `src/components/ui/` following the shadcn/ui pattern
 
 ### Dangerous Patterns to Avoid

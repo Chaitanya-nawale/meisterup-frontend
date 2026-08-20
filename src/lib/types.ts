@@ -1,6 +1,6 @@
 /* ============================================================
    src/lib/types.ts
-   Shared TypeScript interfaces mirroring the Supabase DB schema.
+   Shared TypeScript interfaces mirroring the database schema.
    Import from here — never redefine inline in components.
    ============================================================ */
 

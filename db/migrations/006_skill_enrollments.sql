@@ -5,7 +5,7 @@
    ============================================================ */
 
 CREATE TABLE IF NOT EXISTS user_skill_enrollments (
-  user_id     UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  user_id     TEXT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   skill_id    UUID NOT NULL REFERENCES skills(id)   ON DELETE CASCADE,
   enrolled_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
@@ -15,24 +15,6 @@ CREATE TABLE IF NOT EXISTS user_skill_enrollments (
 -- Index for fast per-user lookups
 CREATE INDEX IF NOT EXISTS idx_skill_enrollments_user
   ON user_skill_enrollments (user_id, enrolled_at DESC);
-
--- RLS: users can only see / manage their own enrollments
-ALTER TABLE user_skill_enrollments ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "own_enrollments_select"
-  ON user_skill_enrollments
-  FOR SELECT
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "own_enrollments_insert"
-  ON user_skill_enrollments
-  FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "own_enrollments_delete"
-  ON user_skill_enrollments
-  FOR DELETE
-  USING (auth.uid() = user_id);
 
 -- Leaderboard view: weekly XP + streak per user (used by fetchLeaderboard)
 -- Drop the view first to avoid signature change errors when replacing it

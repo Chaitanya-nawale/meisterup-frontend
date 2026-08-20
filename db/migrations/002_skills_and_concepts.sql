@@ -30,13 +30,6 @@ create table if not exists public.skills (
   updated_at      timestamptz default now()
 );
 
-alter table public.skills enable row level security;
-
--- Anyone can browse published skills (SEO-friendly)
-create policy "Published skills are public"
-  on public.skills for select
-  using (is_published = true);
-
 -- ────────────────────────────────────────────────────────────
 -- 2. CONCEPTS
 -- Individual knowledge nodes within a skill tree.
@@ -71,12 +64,6 @@ create table if not exists public.concepts (
   unique(skill_id, slug)
 );
 
-alter table public.concepts enable row level security;
-
-create policy "Published concepts are public"
-  on public.concepts for select
-  using (is_published = true);
-
 -- ────────────────────────────────────────────────────────────
 -- 3. CONCEPT PREREQUISITES (Directed Graph Edges)
 -- "To learn concept B, you should first understand concept A."
@@ -96,12 +83,6 @@ create table if not exists public.concept_prerequisites (
   unique(concept_id, prerequisite_id),
   check(concept_id != prerequisite_id)
 );
-
-alter table public.concept_prerequisites enable row level security;
-
-create policy "Prerequisites are public"
-  on public.concept_prerequisites for select
-  using (true);
 
 -- ────────────────────────────────────────────────────────────
 -- 4. CROSS-LANGUAGE CONCEPT LINKS
@@ -130,12 +111,6 @@ create table if not exists public.concept_links (
   check(concept_a_id != concept_b_id)
 );
 
-alter table public.concept_links enable row level security;
-
-create policy "Concept links are public"
-  on public.concept_links for select
-  using (true);
-
 -- ────────────────────────────────────────────────────────────
 -- 5. USER SKILL PROGRESS
 -- Per-user, per-skill mastery tracking.
@@ -143,7 +118,7 @@ create policy "Concept links are public"
 
 create table if not exists public.user_skill_progress (
   id              uuid primary key default gen_random_uuid(),
-  user_id         uuid not null references public.profiles(id) on delete cascade,
+  user_id         text not null references public.profiles(id) on delete cascade,
   skill_id        uuid not null references public.skills(id) on delete cascade,
   
   -- Aggregate metrics
@@ -164,20 +139,6 @@ create table if not exists public.user_skill_progress (
   unique(user_id, skill_id)
 );
 
-alter table public.user_skill_progress enable row level security;
-
-create policy "Users can view own skill progress"
-  on public.user_skill_progress for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own skill progress"
-  on public.user_skill_progress for insert
-  with check (auth.uid() = user_id);
-
-create policy "Users can update own skill progress"
-  on public.user_skill_progress for update
-  using (auth.uid() = user_id);
-
 -- ────────────────────────────────────────────────────────────
 -- 6. USER CONCEPT MASTERY
 -- Per-user, per-concept mastery tracking.
@@ -186,7 +147,7 @@ create policy "Users can update own skill progress"
 
 create table if not exists public.user_concept_mastery (
   id              uuid primary key default gen_random_uuid(),
-  user_id         uuid not null references public.profiles(id) on delete cascade,
+  user_id         text not null references public.profiles(id) on delete cascade,
   concept_id      uuid not null references public.concepts(id) on delete cascade,
   
   -- Mastery state (Bayesian Knowledge Tracing)
@@ -223,20 +184,6 @@ create table if not exists public.user_concept_mastery (
   
   unique(user_id, concept_id)
 );
-
-alter table public.user_concept_mastery enable row level security;
-
-create policy "Users can view own concept mastery"
-  on public.user_concept_mastery for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own concept mastery"
-  on public.user_concept_mastery for insert
-  with check (auth.uid() = user_id);
-
-create policy "Users can update own concept mastery"
-  on public.user_concept_mastery for update
-  using (auth.uid() = user_id);
 
 -- ────────────────────────────────────────────────────────────
 -- INDEXES

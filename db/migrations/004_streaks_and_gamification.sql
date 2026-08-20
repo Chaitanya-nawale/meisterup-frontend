@@ -12,7 +12,7 @@
 -- ────────────────────────────────────────────────────────────
 
 create table if not exists public.user_streaks (
-  user_id           uuid primary key references public.profiles(id) on delete cascade,
+  user_id           text primary key references public.profiles(id) on delete cascade,
   
   current_streak    integer default 0,
   longest_streak    integer default 0,
@@ -27,31 +27,6 @@ create table if not exists public.user_streaks (
   updated_at        timestamptz default now()
 );
 
-alter table public.user_streaks enable row level security;
-
-create policy "Users can view own streak"
-  on public.user_streaks for select
-  using (auth.uid() = user_id);
-
-create policy "Users can update own streak"
-  on public.user_streaks for update
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own streak"
-  on public.user_streaks for insert
-  with check (auth.uid() = user_id);
-
--- Leaderboard: allow reading streaks of opted-in users
-create policy "Leaderboard streak visibility"
-  on public.user_streaks for select
-  using (
-    exists (
-      select 1 from public.profiles
-      where profiles.id = user_id
-      and profiles.leaderboard_opt_in = true
-    )
-  );
-
 -- ────────────────────────────────────────────────────────────
 -- 2. XP LEDGER
 -- Every XP transaction is logged for auditability.
@@ -59,7 +34,7 @@ create policy "Leaderboard streak visibility"
 
 create table if not exists public.xp_ledger (
   id              uuid primary key default gen_random_uuid(),
-  user_id         uuid not null references public.profiles(id) on delete cascade,
+  user_id         text not null references public.profiles(id) on delete cascade,
   
   amount          integer not null,                    -- Can be negative for penalties
   reason          text not null check (reason in (
@@ -80,16 +55,6 @@ create table if not exists public.xp_ledger (
   
   created_at      timestamptz default now()
 );
-
-alter table public.xp_ledger enable row level security;
-
-create policy "Users can view own XP ledger"
-  on public.xp_ledger for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own XP entries"
-  on public.xp_ledger for insert
-  with check (auth.uid() = user_id);
 
 -- ────────────────────────────────────────────────────────────
 -- 3. BADGES
@@ -131,19 +96,13 @@ create table if not exists public.badges (
   created_at      timestamptz default now()
 );
 
-alter table public.badges enable row level security;
-
-create policy "Badges are public"
-  on public.badges for select
-  using (true);
-
 -- ────────────────────────────────────────────────────────────
 -- 4. USER BADGES (earned)
 -- ────────────────────────────────────────────────────────────
 
 create table if not exists public.user_badges (
   id              uuid primary key default gen_random_uuid(),
-  user_id         uuid not null references public.profiles(id) on delete cascade,
+  user_id         text not null references public.profiles(id) on delete cascade,
   badge_id        uuid not null references public.badges(id) on delete cascade,
   
   earned_at       timestamptz default now(),
@@ -151,34 +110,13 @@ create table if not exists public.user_badges (
   unique(user_id, badge_id)
 );
 
-alter table public.user_badges enable row level security;
-
-create policy "Users can view own badges"
-  on public.user_badges for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own badges"
-  on public.user_badges for insert
-  with check (auth.uid() = user_id);
-
--- Public badge visibility for public profiles
-create policy "Public profile badges are viewable"
-  on public.user_badges for select
-  using (
-    exists (
-      select 1 from public.profiles
-      where profiles.id = user_id
-      and profiles.profile_public = true
-    )
-  );
-
 -- ────────────────────────────────────────────────────────────
 -- 5. DAILY GOALS
 -- Configurable daily targets.
 -- ────────────────────────────────────────────────────────────
 
 create table if not exists public.user_daily_goals (
-  user_id             uuid primary key references public.profiles(id) on delete cascade,
+  user_id             text primary key references public.profiles(id) on delete cascade,
   
   target_sessions     integer default 1,               -- Sessions per day
   target_xp           integer default 50,              -- XP per day
@@ -186,20 +124,6 @@ create table if not exists public.user_daily_goals (
   
   updated_at          timestamptz default now()
 );
-
-alter table public.user_daily_goals enable row level security;
-
-create policy "Users can view own daily goals"
-  on public.user_daily_goals for select
-  using (auth.uid() = user_id);
-
-create policy "Users can update own daily goals"
-  on public.user_daily_goals for update
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own daily goals"
-  on public.user_daily_goals for insert
-  with check (auth.uid() = user_id);
 
 -- ────────────────────────────────────────────────────────────
 -- 6. LEADERBOARD VIEW

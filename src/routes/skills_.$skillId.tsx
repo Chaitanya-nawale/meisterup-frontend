@@ -1197,7 +1197,7 @@ function SkillPracticePage() {
     } else {
       setStreak(0);
     }
-    // Record to Supabase (fire-and-forget)
+    // Record to database (fire-and-forget)
     if (activeSessionRef.current) {
       recordAnswer(activeSessionRef.current, {
         cardId: card.id,
@@ -1218,7 +1218,7 @@ function SkillPracticePage() {
     setPrevStreak(streak);
     setPrevXp(xp);
 
-    // Record to Supabase (fire-and-forget)
+    // Record to database (fire-and-forget)
     if (activeSessionRef.current) {
       recordAnswer(activeSessionRef.current, {
         cardId: card.id,
@@ -1254,7 +1254,7 @@ function SkillPracticePage() {
     } else {
       setStreak(0);
     }
-    // Record to Supabase (fire-and-forget)
+    // Record to database (fire-and-forget)
     if (activeSessionRef.current) {
       recordAnswer(activeSessionRef.current, {
         cardId: card.id,

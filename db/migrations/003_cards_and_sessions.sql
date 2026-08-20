@@ -74,12 +74,6 @@ create table if not exists public.cards (
   updated_at      timestamptz default now()
 );
 
-alter table public.cards enable row level security;
-
-create policy "Published cards are readable"
-  on public.cards for select
-  using (is_published = true);
-
 -- ────────────────────────────────────────────────────────────
 -- 2. SESSIONS
 -- A practice session groups multiple card interactions.
@@ -88,7 +82,7 @@ create policy "Published cards are readable"
 
 create table if not exists public.sessions (
   id              uuid primary key default gen_random_uuid(),
-  user_id         uuid not null references public.profiles(id) on delete cascade,
+  user_id         text not null references public.profiles(id) on delete cascade,
   skill_id        uuid not null references public.skills(id) on delete cascade,
   
   -- Session type
@@ -115,20 +109,6 @@ create table if not exists public.sessions (
   created_at      timestamptz default now()
 );
 
-alter table public.sessions enable row level security;
-
-create policy "Users can view own sessions"
-  on public.sessions for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own sessions"
-  on public.sessions for insert
-  with check (auth.uid() = user_id);
-
-create policy "Users can update own sessions"
-  on public.sessions for update
-  using (auth.uid() = user_id);
-
 -- ────────────────────────────────────────────────────────────
 -- 3. SESSION RESULTS (Per-Card Answers)
 -- Each row = one card interaction within a session.
@@ -138,7 +118,7 @@ create policy "Users can update own sessions"
 create table if not exists public.session_results (
   id              uuid primary key default gen_random_uuid(),
   session_id      uuid not null references public.sessions(id) on delete cascade,
-  user_id         uuid not null references public.profiles(id) on delete cascade,
+  user_id         text not null references public.profiles(id) on delete cascade,
   card_id         uuid not null references public.cards(id) on delete cascade,
   concept_id      uuid not null references public.concepts(id) on delete cascade,
   
@@ -162,16 +142,6 @@ create table if not exists public.session_results (
   
   answered_at     timestamptz default now()
 );
-
-alter table public.session_results enable row level security;
-
-create policy "Users can view own results"
-  on public.session_results for select
-  using (auth.uid() = user_id);
-
-create policy "Users can insert own results"
-  on public.session_results for insert
-  with check (auth.uid() = user_id);
 
 -- ────────────────────────────────────────────────────────────
 -- INDEXES
