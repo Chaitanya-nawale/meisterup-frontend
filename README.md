@@ -32,12 +32,14 @@ Make sure you have [Bun](https://bun.sh/) installed on your machine.
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/meisterup-frontend.git
    cd meisterup-frontend
    ```
 
 2. Install the project dependencies:
+
    ```bash
    bun install
    ```
@@ -47,19 +49,23 @@ Make sure you have [Bun](https://bun.sh/) installed on your machine.
 ### Running the Development Server
 
 Start the application locally:
+
 ```bash
 bun run dev
 ```
+
 The application will be available at `http://localhost:3000`. Routing is fully type-safe and file-based; TanStack Router will automatically manage the route tree as you develop.
 
 ### Building for Production
 
 To create a production-ready build:
+
 ```bash
 bun run build
 ```
 
 To preview the built production app locally:
+
 ```bash
 bun run preview
 ```

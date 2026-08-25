@@ -507,19 +507,19 @@ function SignInPage() {
               {/* Footer note */}
               <p className="mt-5 text-center text-[12px] text-muted-foreground/60">
                 By signing in, you agree to our{" "}
-                <a
-                  href="#terms"
+                <Link
+                  to="/terms"
                   className="underline hover:text-muted-foreground transition-colors"
                 >
                   Terms
-                </a>{" "}
+                </Link>{" "}
                 and{" "}
-                <a
-                  href="#privacy"
+                <Link
+                  to="/privacy"
                   className="underline hover:text-muted-foreground transition-colors"
                 >
                   Privacy Policy
-                </a>
+                </Link>
                 .
               </p>
             </motion.div>

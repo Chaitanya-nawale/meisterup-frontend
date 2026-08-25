@@ -36,7 +36,7 @@ The current codebase is the **Senior Review Gym** — an interactive Code Compre
 | Forms            | [React Hook Form](https://react-hook-form.com) (`^7.71.2`) + [Zod](https://zod.dev) (`^3.24.2`) |
 | Data Fetching    | [TanStack Query](https://tanstack.com/query) (`^5.101.1`)                                       |
 | Charts           | [Recharts](https://recharts.org) (`^2.15.4`)                                                    |
-| Backend / Auth   | [Neon](https://neon.tech) + BetterAuth — Serverless PostgreSQL + Auth    |
+| Backend / Auth   | [Neon](https://neon.tech) + BetterAuth — Serverless PostgreSQL + Auth                           |
 | Notifications    | [Sonner](https://sonner.emilkowal.ski) (`^2.0.7`) toast system                                  |
 | Class Utilities  | `clsx ^2.1.1` + `tailwind-merge ^3.5.0` → `cn()` helper                                         |
 | Carousel         | `embla-carousel-react ^8.6.0`                                                                   |

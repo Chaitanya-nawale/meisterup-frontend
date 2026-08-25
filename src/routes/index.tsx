@@ -929,12 +929,18 @@ function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center gap-6 text-[12px]">
-          <a href="#" className="transition-colors hover:text-foreground">
+          <Link to="/pricing" className="transition-colors hover:text-foreground">
+            Pricing
+          </Link>
+          <Link to="/faq" className="transition-colors hover:text-foreground">
+            FAQ
+          </Link>
+          <Link to="/privacy" className="transition-colors hover:text-foreground">
             Privacy
-          </a>
-          <a href="#" className="transition-colors hover:text-foreground">
+          </Link>
+          <Link to="/terms" className="transition-colors hover:text-foreground">
             Terms
-          </a>
+          </Link>
           <div className="flex items-center gap-1.5 pl-2 text-muted-foreground/70">
             <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px] shadow-emerald-400" />
             <span>Operational</span>
