@@ -36,7 +36,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-
 function Nav() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
@@ -175,7 +174,6 @@ function PricingPage() {
           </p>
         </div>
       </section>
-
 
       {/* Pricing Cards */}
       <section className="relative border-t border-border/20 py-16">

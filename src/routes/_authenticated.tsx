@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { useStreak } from "../hooks/useStreak";
+import { useUserProfile } from "../hooks/useProfile";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
@@ -199,6 +200,7 @@ function AuthenticatedLayout() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { data: profile, isLoading: profileLoading } = useUserProfile();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -206,7 +208,15 @@ function AuthenticatedLayout() {
     }
   }, [user, loading, navigate]);
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && user && !profileLoading) {
+      if (!profile || !profile.onboarding_completed_at) {
+        navigate({ to: "/onboarding" });
+      }
+    }
+  }, [loading, user, profileLoading, profile, navigate]);
+
+  if (loading || (user && profileLoading)) {
     return (
       <div className="min-h-screen bg-black font-sans">
         {/* Fake Nav Skeleton */}
@@ -248,7 +258,7 @@ function AuthenticatedLayout() {
     );
   }
 
-  if (!user) return null;
+  if (!user || !profile?.onboarding_completed_at) return null;
 
   return (
     <div className="min-h-screen bg-black font-sans text-white">

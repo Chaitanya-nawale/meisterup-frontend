@@ -37,8 +37,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-
-
 function Nav() {
   const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
